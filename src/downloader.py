@@ -10,9 +10,12 @@ This module provides:
 
 import subprocess
 import json
+import logging
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Callable
 import re
+
+logger = logging.getLogger(__name__)
 
 
 class YTDLPDownloader:
@@ -171,7 +174,7 @@ class YTDLPDownloader:
         artist = None
         album = None
         
-        album_pattern = re.compile(r'\[download\]\s+Downloading playlist:\s+Album\s+-\s+(.+?)(?:\s*-\s+|\s*$)')
+        album_pattern = re.compile(r'\[download\]\s+Downloading playlist:\s+Album\s+-\s+(.+)$', re.MULTILINE)
         album_match = album_pattern.search(output)
         if album_match:
             album = album_match.group(1).strip()
@@ -188,7 +191,7 @@ class YTDLPDownloader:
         url: str,
         output_dir: Path,
         progress_callback: Optional[Callable[[str], None]] = None
-        ) -> Tuple[bool, Optional[Tuple[Optional[str], Optional[str]]], Optional[str]]:
+    ) -> Tuple[bool, Optional[Tuple[Optional[str], Optional[str]]], Optional[str]]:
         """
         Download audio and capture verbose output for metadata extraction.
         
@@ -208,36 +211,49 @@ class YTDLPDownloader:
                 self.ytdlp_path,
                 "--verbose",
                 "--extract-audio",
+                "--embed-metadata",
                 "--audio-quality", "0",
                 "-o", str(output_dir / "%(title)s.%(ext)s"),
                 url
             ]
             
-            full_output = []
+            full_output = []  # This will store ALL lines
             
-            # Use context manager or proper cleanup
             process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
-                bufsize=1
+                bufsize=1,
+                universal_newlines=True  # Ensure text mode
             )
             
             try:
-                # Read output line by line
+                # Read output line by line and save everything
                 if process.stdout:
                     for line in iter(process.stdout.readline, ''):
-                        if not line:  # Empty string means EOF
+                        if not line:  # EOF
                             break
-                        stripped = line.strip()
-                        if stripped:  # Only append non-empty lines
-                            full_output.append(stripped)
-                            if progress_callback:
-                                progress_callback(stripped)
+                        
+                        # Save the original line (with newline stripped)
+                        stripped = line.rstrip('\n\r')
+                        full_output.append(stripped)
+                        
+                        # Call progress callback if provided
+                        if progress_callback and stripped:
+                            progress_callback(stripped)
                 
-                # Wait for process to complete and get return code
+                # Wait for process to complete
                 return_code = process.wait()
+                
+                # NOW we have all the output saved in full_output
+                output_text = "\n".join(full_output)
+                logger.debug(f"OUTPUT TEXT HERE: {output_text} OUTPUT END HERE!")
+
+                
+                # Debug: print length to verify we captured something
+                if progress_callback:
+                    progress_callback(f"\n[DEBUG] Captured {len(full_output)} lines, {len(output_text)} characters")
                 
                 # Check if download was successful
                 if return_code != 0:
@@ -245,8 +261,6 @@ class YTDLPDownloader:
                     return False, None, f"Download failed with code {return_code}: {error_output}"
                 
                 # Parse the output for metadata
-                output_text = "\n".join(full_output)
-               
                 artist, album = self.parse_verbose_output(output_text)
                 
                 return True, (artist, album), None
