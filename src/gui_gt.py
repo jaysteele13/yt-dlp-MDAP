@@ -84,11 +84,11 @@ class ConfirmDialog(QMessageBox):
     
     def __init__(self, parent, artist: str, album: str, file_count: int, is_album: bool):
         super().__init__(parent)
+        self.is_album = is_album
         self.setWindowTitle("Confirm Details")
         self.setIcon(QMessageBox.Question)
         
         artist = artist or "Unknown"
-        album = album or "Unknown"
         
         download_type = "Album" if is_album else "Song"
         
@@ -100,16 +100,26 @@ class ConfirmDialog(QMessageBox):
         )
         
         self.artist_input = QLineEdit(artist)
-        self.album_input = QLineEdit(album)
         
-        self.setDetailedText(f"Artist: {artist}\nAlbum: {album}")
+        if is_album:
+            album = album or "Unknown"
+            self.album_input = QLineEdit(album)
+        else:
+            self.album_input = None
+        
+        if is_album:
+            self.setDetailedText(f"Artist: {artist}\nAlbum: {album}")
+        else:
+            self.setDetailedText(f"Artist: {artist}")
         
         self.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         self.button(QMessageBox.Ok).setText("Confirm & Move")
         self.button(QMessageBox.Cancel).setText("Cancel")
     
     def get_values(self) -> tuple:
-        return self.artist_input.text().strip(), self.album_input.text().strip()
+        artist = self.artist_input.text().strip()
+        album = self.album_input.text().strip() if self.album_input else ""
+        return artist, album
 
 
 class YouTubeDownloadHelperQt(QMainWindow):
@@ -179,7 +189,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
         
         self.type_group = QButtonGroup(self)
         
-        self.album_radio = QRadioButton("Album")
+        self.album_radio = QRadioButton("Album / Playlist")
         self.album_radio.setChecked(True)
         self.song_radio = QRadioButton("Single Song")
         
@@ -418,7 +428,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
                 self.status_bar.showMessage("Artist name required")
                 return
             
-            if not confirmed_album:
+            if self.is_album_type and not confirmed_album:
                 QMessageBox.warning(self, "Error", "Album name is required")
                 self.status_bar.showMessage("Album name required")
                 return
