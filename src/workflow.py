@@ -155,8 +155,6 @@ class DownloadWorkflow:
         success, metadata, error = self.downloader.download_with_verbose_capture(
             url=url,
             output_dir=ts_dir,
-            format_type=self.output_format,
-            quality=self.output_quality,
             progress_callback=progress_callback
         )
         
@@ -298,34 +296,3 @@ class DownloadWorkflow:
             'output_dir': str(self.base_output_dir)
         }
 
-
-def quick_download(
-    url: str,
-    artist: str,
-    album: str,
-    is_album_type: bool = True,
-    base_output_dir: Optional[Path] = None
-) -> Tuple[bool, Path, Optional[str]]:
-    """
-    Convenience function for quick download with immediate confirmation.
-    
-    Args:
-        url: YouTube URL
-        artist: Artist name
-        album: Album name
-        is_album_type: True for Album, False for Song
-        base_output_dir: Base output directory
-        
-    Returns:
-        Tuple of (success, final_destination_path, error_message)
-    """
-    logger.info(f"Quick download: {url}")
-    
-    workflow = DownloadWorkflow(base_output_dir=base_output_dir)
-    
-    success, temp_dir, error = workflow.download(url)
-    if not success:
-        return False, Path(), error
-    
-    success, dest, error = workflow.confirm_and_move(artist, album, is_album_type)
-    return success, dest, error

@@ -31,6 +31,7 @@ from PyQt5.QtGui import QFont
 from workflow import DownloadWorkflow
 from logger import MultiLogger, FileLogger, JSONLogger
 from core import DownloadManager
+from core import TEMP_BASE
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -198,6 +199,8 @@ class YouTubeDownloadHelperQt(QMainWindow):
         input_group.setLayout(input_layout)
         main_layout.addWidget(input_group)
         
+        button_layout = QHBoxLayout()
+        
         self.download_btn = QPushButton("Download")
         self.download_btn.setMinimumHeight(45)
         self.download_btn.setStyleSheet("""
@@ -221,7 +224,35 @@ class YouTubeDownloadHelperQt(QMainWindow):
             }
         """)
         self.download_btn.clicked.connect(self.start_download)
-        main_layout.addWidget(self.download_btn)
+        
+        self.cancel_btn = QPushButton("Cancel Download")
+        self.cancel_btn.setMinimumHeight(45)
+        self.cancel_btn.setEnabled(False)
+        self.cancel_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #F44336;
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+                border: none;
+                border-radius: 4px;
+            }
+            QPushButton:hover {
+                background-color: #d32f2f;
+            }
+            QPushButton:pressed {
+                background-color: #b71c1c;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
+            }
+        """)
+        self.cancel_btn.clicked.connect(self.cancel_download)
+        
+        button_layout.addWidget(self.download_btn, 2)
+        button_layout.addWidget(self.cancel_btn, 1)
+        main_layout.addLayout(button_layout)
         
         self.progress_bar = QProgressBar()
         self.progress_bar.setTextVisible(False)
@@ -297,6 +328,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
     def set_downloading(self, downloading: bool):
         """Enable/disable download controls during download"""
         self.download_btn.setEnabled(not downloading)
+        self.cancel_btn.setEnabled(downloading)
         self.link_entry.setEnabled(not downloading)
         self.album_radio.setEnabled(not downloading)
         self.song_radio.setEnabled(not downloading)
@@ -307,6 +339,27 @@ class YouTubeDownloadHelperQt(QMainWindow):
         else:
             self.download_btn.setText("Download")
             self.progress_bar.setValue(0)
+    
+    def cancel_download(self):
+        """Cancel the current download"""
+        logger.info("Cancel requested by user")
+        
+        if self.download_thread and self.download_thread.isRunning():
+            self.append_output("")
+            self.append_output("<span style='color: #FF9800;'>! Cancelling download...</span>")
+            
+            self.download_thread.terminate()
+            self.download_thread.wait()
+            
+            if self.workflow:
+                self.workflow.cancel()
+            
+            self.set_downloading(False)
+            self.append_output("<span style='color: #FF9800;'>! Download cancelled</span>")
+            self.status_bar.showMessage("Download cancelled")
+            
+            self.link_entry.clear()
+            self.link_entry.setFocus()
     
     def start_download(self):
         """Start the download process"""
@@ -453,6 +506,48 @@ class YouTubeDownloadHelperQt(QMainWindow):
     def clear_output(self):
         """Clear the output text area"""
         self.output_text.clear()
+    
+    def view_history(self):
+        """View download history from log files"""
+        logger.info("Opening download history")
+        
+        json_log = Path.home() / "youtube_downloads_log.json"
+        
+        if json_log.exists():
+            try:
+                import subprocess
+                subprocess.Popen(['xdg-open', str(json_log)])
+            except Exception as e:
+                logger.error(f"Failed to open history file: {e}")
+                QMessageBox.warning(self, "Error", f"Could not open history: {e}")
+        else:
+            QMessageBox.information(self, "History", "No download history found yet.")
+    
+    def closeEvent(self, event):
+        """Handle application close - cleanup if needed"""
+        logger.info("Application closing")
+        
+        temp_dir = TEMP_BASE
+        if temp_dir.exists():
+            subdirs = [d for d in temp_dir.iterdir() if d.is_dir()]
+            if subdirs:
+                logger.warning(f"Found {len(subdirs)} temp directories on close")
+                reply = QMessageBox.question(
+                    self,
+                    "Cleanup",
+                    f"Found {len(subdirs)} temporary download directories.\nClean them up?",
+                    QMessageBox.Yes | QMessageBox.No
+                )
+                if reply == QMessageBox.Yes:
+                    import shutil
+                    for d in subdirs:
+                        try:
+                            shutil.rmtree(d)
+                            logger.info(f"Cleaned up: {d}")
+                        except Exception as e:
+                            logger.error(f"Failed to cleanup {d}: {e}")
+        
+        event.accept()
 
 
 def main():

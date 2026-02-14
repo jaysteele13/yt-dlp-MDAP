@@ -184,26 +184,21 @@ class YTDLPDownloader:
         return artist, album
     
     def download_with_verbose_capture(
-        self,
-        url: str,
-        output_dir: Path,
-        format_type: str = "mp3",
-        quality: str = "320",
-        progress_callback: Optional[Callable[[str], None]] = None
+    self,
+    url: str,
+    output_dir: Path,
+    progress_callback: Optional[Callable[[str], None]] = None
     ) -> Tuple[bool, Optional[Tuple[Optional[str], Optional[str]]], Optional[str]]:
         """
         Download audio and capture verbose output for metadata extraction.
-        
         Uses --verbose flag to extract Artist and Album from yt-dlp output
         as documented in planning/how_will_work.md
-        
         Args:
             url: YouTube URL
             output_dir: Directory to save files
             format_type: Audio format (mp3, m4a, opus, etc.)
             quality: Audio quality for mp3 (320, 256, 192, 128)
             progress_callback: Optional callback for progress updates
-            
         Returns:
             Tuple of (success, (artist, album) tuple, error_message)
         """
@@ -211,18 +206,12 @@ class YTDLPDownloader:
             cmd = [
                 self.ytdlp_path,
                 "--verbose",
-                "-x",
-                "--audio-format", format_type,
-                "--audio-quality", f"{quality}K" if format_type == "mp3" else "0",
-                "--embed-thumbnail",
-                "--embed-metadata",
-                "--add-metadata",
+                "--extract-audio",
+                "--audio-quality", "0",
                 "-o", str(output_dir / "%(title)s.%(ext)s"),
                 url
             ]
-            
             full_output = []
-            
             process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
@@ -231,85 +220,35 @@ class YTDLPDownloader:
                 bufsize=1
             )
             
-            if progress_callback:
-                for line in process.stdout:
-                    stripped = line.strip()
-                    full_output.append(stripped)
+            for line in process.stdout:
+                stripped = line.strip()
+                full_output.append(stripped)
+                
+                if progress_callback:
                     progress_callback(stripped)
-            else:
-                for line in process.stdout:
-                    full_output.append(line.strip())
-                process.wait()
+
+            process.wait()
             
-            if process.returncode != 0:
-                return False, None, "Download failed"
+            # Check for specific error messages in the output
+            error_messages = [
+                "ERROR",
+                "WARNING",
+                "Failed to download video",
+                "Access denied",
+                "No video formats found"
+            ]
+            
+            for message in error_messages:
+                if message in full_output:
+                    return False, None, f"Download failed: {message}"
             
             output_text = "\n".join(full_output)
             artist, album = self.parse_verbose_output(output_text)
-            
             return True, (artist, album), None
-            
+
         except Exception as e:
             return False, None, str(e)
-    
-    def download_audio(
-        self,
-        url: str,
-        output_dir: Path,
-        format_type: str = "mp3",
-        quality: str = "320",
-        progress_callback: Optional[Callable[[str], None]] = None
-    ) -> Tuple[bool, Optional[str]]:
-        """
-        Download audio from YouTube URL
-        
-        Args:
-            url: YouTube URL
-            output_dir: Directory to save files
-            format_type: Audio format (mp3, m4a, opus, etc.)
-            quality: Audio quality for mp3 (320, 256, 192, 128)
-            progress_callback: Optional callback function for progress updates
-            
-        Returns:
-            Tuple of (success, error_message)
-        """
-        try:
-            cmd = [
-                self.ytdlp_path,
-                "-x",  # Extract audio
-                "--audio-format", format_type,
-                "--audio-quality", f"{quality}K" if format_type == "mp3" else "0",
-                "--embed-thumbnail",  # Embed album art
-                "--embed-metadata",  # Embed metadata
-                "--add-metadata",
-                "-o", str(output_dir / "%(title)s.%(ext)s"),
-                url
-            ]
-            
-            # Run the download
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1
-            )
-            
-            # Stream output
-            if progress_callback:
-                for line in process.stdout:
-                    progress_callback(line.strip())
-            else:
-                process.wait()
-            
-            if process.returncode != 0:
-                return False, "Download failed"
-            
-            return True, None
-            
-        except Exception as e:
-            return False, str(e)
-    
+
     def get_download_command(
         self,
         url: str,
@@ -351,18 +290,3 @@ def quick_suggest(url: str) -> Tuple[Optional[str], Optional[str]]:
     downloader = YTDLPDownloader()
     return downloader.suggest_artist_album(url)
 
-
-def quick_download(url: str, output_dir: Path, format_type: str = "mp3") -> Tuple[bool, Optional[str]]:
-    """
-    Quick function to download audio
-    
-    Args:
-        url: YouTube URL
-        output_dir: Output directory
-        format_type: Audio format
-        
-    Returns:
-        Tuple of (success, error_message)
-    """
-    downloader = YTDLPDownloader()
-    return downloader.download_audio(url, output_dir, format_type)
