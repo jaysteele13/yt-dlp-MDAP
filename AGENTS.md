@@ -154,3 +154,11 @@ except Exception as e:
 - **Static methods** for pure utility functions
 - **Private methods** (prefix `_`) for internal helpers
 - **Property-based configuration** in classes with sensible defaults
+
+### Styles
+
+We should generally have no border radius
+
+The border should be: border: 1px solid #242424.
+
+For Green we use this colour: #548478
