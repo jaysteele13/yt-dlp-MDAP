@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QTextEdit, QFileDialog,
     QMessageBox, QGroupBox, QStatusBar, QFrame,
-    QProgressBar, QRadioButton, QButtonGroup
+    QProgressBar, QRadioButton, QButtonGroup, QDialog
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QFont
@@ -79,47 +79,120 @@ class DownloadThread(QThread):
             self.error.emit(str(e))
 
 
-class ConfirmDialog(QMessageBox):
-    """Custom dialog for confirming artist/album after download"""
+class EditArtistAlbumDialog(QDialog):
+    """Dialog for editing artist/album values"""
     
-    def __init__(self, parent, artist: str, album: str, file_count: int, is_album: bool):
+    def __init__(self, parent, artist: str, album: str, is_album: bool):
         super().__init__(parent)
         self.is_album = is_album
-        self.setWindowTitle("Confirm Details")
-        self.setIcon(QMessageBox.Question)
+        self.setWindowTitle("Edit Album / Artist")
+        self.setMinimumWidth(400)
+        self.setModal(True)
         
-        artist = artist or "Unknown"
+        layout = QVBoxLayout()
         
-        download_type = "Album" if is_album else "Song"
-        
-        self.setText(
-            f"<b>Download Complete!</b><br><br>"
-            f"Type: {download_type}<br>"
-            f"Files downloaded: {file_count}<br><br>"
-            f"Please confirm or correct the details:"
-        )
-        
+        artist_label = QLabel("Artist:")
         self.artist_input = QLineEdit(artist)
+        self.artist_input.setPlaceholderText(artist or "Enter artist name")
+        layout.addWidget(artist_label)
+        layout.addWidget(self.artist_input)
         
         if is_album:
-            album = album or "Unknown"
+            album_label = QLabel("Album:")
             self.album_input = QLineEdit(album)
+            self.album_input.setPlaceholderText(album or "Enter album name")
+            layout.addWidget(album_label)
+            layout.addWidget(self.album_input)
         else:
             self.album_input = None
         
-        if is_album:
-            self.setDetailedText(f"Artist: {artist}\nAlbum: {album}")
-        else:
-            self.setDetailedText(f"Artist: {artist}")
+        button_layout = QHBoxLayout()
+        ok_btn = QPushButton("Save")
+        cancel_btn = QPushButton("Cancel")
+        ok_btn.clicked.connect(self.accept)
+        cancel_btn.clicked.connect(self.reject)
+        button_layout.addWidget(ok_btn)
+        button_layout.addWidget(cancel_btn)
+        layout.addLayout(button_layout)
         
-        self.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        self.button(QMessageBox.Ok).setText("Confirm & Move")
-        self.button(QMessageBox.Cancel).setText("Cancel")
+        self.setLayout(layout)
     
     def get_values(self) -> tuple:
         artist = self.artist_input.text().strip()
         album = self.album_input.text().strip() if self.album_input else ""
         return artist, album
+
+
+class ConfirmDialog(QDialog):
+    """Custom dialog for confirming artist/album after download"""
+    
+    def __init__(self, parent, artist: str, album: str, file_count: int, is_album: bool):
+        super().__init__(parent)
+        self.is_album = is_album
+        self.auto_artist = artist or ""
+        self.auto_album = album or ""
+        self.file_count = file_count
+        self.setWindowTitle("Confirm Details")
+        self.setMinimumWidth(450)
+        
+        layout = QVBoxLayout()
+        
+        title_label = QLabel("<b>Download Complete!</b>")
+        title_label.setStyleSheet("font-size: 14px;")
+        layout.addWidget(title_label)
+        
+        download_type = "Album" if is_album else "Song"
+        type_label = QLabel(f"Type: {download_type}")
+        layout.addWidget(type_label)
+        
+        files_label = QLabel(f"Files downloaded: {file_count}")
+        layout.addWidget(files_label)
+        
+        layout.addSpacing(10)
+        
+        artist = self.auto_artist or "Unknown"
+        self.artist_display = QLabel(f"<b>Artist:</b> {artist}")
+        layout.addWidget(self.artist_display)
+        
+        if is_album:
+            album_text = self.auto_album or "Unknown"
+            self.album_display = QLabel(f"<b>Album:</b> {album_text}")
+            layout.addWidget(self.album_display)
+        else:
+            self.album_display = None
+        
+        self.edit_btn = QPushButton("Edit Album / Artist")
+        self.edit_btn.clicked.connect(self._show_edit_dialog)
+        layout.addWidget(self.edit_btn)
+        
+        layout.addSpacing(20)
+        
+        button_layout = QHBoxLayout()
+        self.confirm_btn = QPushButton("Confirm & Move")
+        self.confirm_btn.setDefault(True)
+        self.cancel_btn = QPushButton("Cancel")
+        self.confirm_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
+        button_layout.addWidget(self.confirm_btn)
+        button_layout.addWidget(self.cancel_btn)
+        layout.addLayout(button_layout)
+        
+        self.setLayout(layout)
+    
+    def _show_edit_dialog(self):
+        dialog = EditArtistAlbumDialog(self, self.auto_artist, self.auto_album, self.is_album)
+        if dialog.exec_() == QDialog.Accepted:
+            self.auto_artist, self.auto_album = dialog.get_values()
+            
+            artist = self.auto_artist or "Unknown"
+            self.artist_display.setText(f"<b>Artist:</b> {artist}")
+            
+            if self.is_album and self.album_display:
+                album_text = self.auto_album or "Unknown"
+                self.album_display.setText(f"<b>Album:</b> {album_text}")
+    
+    def get_values(self) -> tuple:
+        return self.auto_artist, self.auto_album
 
 
 class YouTubeDownloadHelperQt(QMainWindow):
@@ -420,7 +493,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
         
         dialog = ConfirmDialog(self, artist, album, file_count, self.is_album_type)
         
-        if dialog.exec_() == QMessageBox.Ok:
+        if dialog.exec_() == QDialog.Accepted:
             confirmed_artist, confirmed_album = dialog.get_values()
             
             if not confirmed_artist:
