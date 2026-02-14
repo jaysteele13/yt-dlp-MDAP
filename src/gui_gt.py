@@ -204,6 +204,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
         self.workflow: Optional[DownloadWorkflow] = None
         self.download_thread: Optional[DownloadThread] = None
         self.is_album_type = True
+        self.default_output_dir = Path.home() / "Music" / "artists"
         
         self.init_workflow()
         self.init_ui()
@@ -217,14 +218,12 @@ class YouTubeDownloadHelperQt(QMainWindow):
             JSONLogger()
         ])
         
-        base_output = Path.home() / "Music" / "artists"
-        
         self.workflow = DownloadWorkflow(
-            base_output_dir=base_output,
+            base_output_dir=self.default_output_dir,
             logger_instance=backend_logger
         )
         
-        logger.debug(f"Workflow created with output dir: {base_output}")
+        logger.debug(f"Workflow created with output dir: {self.default_output_dir}")
     
     def init_ui(self):
         """Initialize the user interface"""
@@ -376,19 +375,24 @@ class YouTubeDownloadHelperQt(QMainWindow):
         """)
         main_layout.addWidget(self.output_text)
         
-        button_layout = QHBoxLayout()
+        output_layout = QHBoxLayout()
         
-        self.open_dir_btn = QPushButton("Open Output Folder")
-        self.open_dir_btn.clicked.connect(self.open_output_folder)
+        self.output_dir_input = QLineEdit()
+        self.output_dir_input.setPlaceholderText(str(self.default_output_dir))
+        self.output_dir_input.textChanged.connect(self._on_output_dir_changed)
+        
+        self.update_dir_btn = QPushButton("Update Output Folder")
+        self.update_dir_btn.setVisible(False)
+        self.update_dir_btn.clicked.connect(self._update_output_folder)
         
         self.clear_btn = QPushButton("Clear Output")
         self.clear_btn.clicked.connect(self.clear_output)
         
-        button_layout.addWidget(self.open_dir_btn)
-        button_layout.addStretch()
-        button_layout.addWidget(self.clear_btn)
+        output_layout.addWidget(self.output_dir_input)
+        output_layout.addWidget(self.update_dir_btn)
+        output_layout.addWidget(self.clear_btn)
         
-        main_layout.addLayout(button_layout)
+        main_layout.addLayout(output_layout)
         
         central_widget.setLayout(main_layout)
         
@@ -572,9 +576,46 @@ class YouTubeDownloadHelperQt(QMainWindow):
         
         self.link_entry.setFocus()
     
+    def _on_output_dir_changed(self, text: str):
+        """Show/hide update button based on whether path changed from default"""
+        input_path = text.strip()
+        default_path_str = str(self.default_output_dir)
+        
+        if input_path and input_path != default_path_str:
+            self.update_dir_btn.setVisible(True)
+        else:
+            self.update_dir_btn.setVisible(False)
+    
+    def _update_output_folder(self):
+        """Update the output folder"""
+        new_path = self.output_dir_input.text().strip()
+        
+        if not new_path:
+            QMessageBox.warning(self, "Error", "Please enter a valid output path")
+            return
+        
+        new_dir = Path(new_path)
+        
+        try:
+            new_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Could not create directory: {e}")
+            return
+        
+        self.default_output_dir = new_dir
+        self.output_dir_input.setPlaceholderText(str(new_dir))
+        self.output_dir_input.clear()
+        self.update_dir_btn.setVisible(False)
+        
+        self.workflow.base_output_dir = new_dir
+        logger.info(f"Output folder updated to: {new_dir}")
+        self.status_bar.showMessage(f"Output folder set to: {new_dir}")
+        
+        QMessageBox.information(self, "Success", f"Output folder updated to:\n{new_dir}")
+    
     def open_output_folder(self):
         """Open the output folder in file manager"""
-        output_dir = Path.home() / "Music" / "artists"
+        output_dir = self.default_output_dir
         
         if output_dir.exists():
             try:
