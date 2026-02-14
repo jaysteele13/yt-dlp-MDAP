@@ -227,7 +227,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
     
     def init_ui(self):
         """Initialize the user interface"""
-        self.setWindowTitle("Music Download Assistant")
+        self.setWindowTitle("MDAP")
         self.setGeometry(100, 100, 900, 650)
         
         central_widget = QWidget()
@@ -237,7 +237,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
         main_layout.setSpacing(10)
         main_layout.setContentsMargins(15, 15, 15, 15)
         
-        title_label = QLabel("Music Download Assistant")
+        title_label = QLabel("Music Download Automation Pipeline")
         title_label.setFont(QFont("", 14, QFont.Bold))
         title_label.setStyleSheet("color: #333;")
         main_layout.addWidget(title_label)
@@ -287,18 +287,17 @@ class YouTubeDownloadHelperQt(QMainWindow):
         self.download_btn.setMinimumHeight(45)
         self.download_btn.setStyleSheet("""
             QPushButton {
-                background-color: #4CAF50;
+                background-color: #548478;
                 color: white;
                 font-weight: bold;
                 font-size: 14px;
-                border: none;
-                border-radius: 4px;
+                border: 1px solid #242424;
             }
             QPushButton:hover {
-                background-color: #45a049;
+                background-color: #3f645b;
             }
             QPushButton:pressed {
-                background-color: #3d8b40;
+                background-color: #242424;
             }
             QPushButton:disabled {
                 background-color: #cccccc;
@@ -313,18 +312,18 @@ class YouTubeDownloadHelperQt(QMainWindow):
         self.cancel_btn.setVisible(False)
         self.cancel_btn.setStyleSheet("""
             QPushButton {
-                background-color: #F44336;
-                color: white;
+                background-color: transparent;
+                color: #242424;
                 font-weight: bold;
                 font-size: 14px;
-                border: none;
-                border-radius: 4px;
+                border: 1px solid #242424;
             }
             QPushButton:hover {
-                background-color: #d32f2f;
+                background-color: #9785c9;
+                color: #fff
             }
             QPushButton:pressed {
-                background-color: #b71c1c;
+                background-color: #573d9e;
             }
             QPushButton:disabled {
                 background-color: #cccccc;
@@ -344,11 +343,11 @@ class YouTubeDownloadHelperQt(QMainWindow):
             QProgressBar {
                 border: none;
                 background-color: #e0e0e0;
-                border-radius: 3px;
+                border: 1px solid #242424
             }
             QProgressBar::chunk {
-                background-color: #4CAF50;
-                border-radius: 3px;
+                background-color: #9785c9;
+                border: 1px solid #242424
             }
         """)
         main_layout.addWidget(self.progress_bar)
@@ -371,7 +370,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
                 background-color: #1e1e1e;
                 color: #d4d4d4;
                 border: 1px solid #3c3c3c;
-                border-radius: 4px;
+               
             }
         """)
         main_layout.addWidget(self.output_text)
@@ -428,6 +427,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
             self.progress_bar.setMaximum(0)
         else:
             self.download_btn.setText("Download")
+            self.status_bar.showMessage("Download")
             self.progress_bar.setMaximum(100)
             self.progress_bar.setValue(100)
     
