@@ -1,0 +1,237 @@
+ curl cheat.sh/yt-dlp
+
+# yt-dlp
+# A youtube-dl fork with additional features and fixes.
+# Download videos from YouTube and other websites.
+# More information: <https://github.com/yt-dlp/yt-dlp>.
+
+# Download a video or playlist (with the default options from command below):
+yt-dlp "https://www.youtube.com/watch?v=oHg5SJYRHA0"
+
+# List the available downloadable formats for a video:
+yt-dlp --list-formats "https://www.youtube.com/watch?v=oHg5SJYRHA0"
+
+# Download a video with a defined format, in this case the best mp4 video available (default is "bv\*+ba/b"):
+yt-dlp --format "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]" "https://www.youtube.com/watch?v=oHg5SJYRHA0"
+
+# Extract audio from a video (requires ffmpeg or ffprobe):
+yt-dlp --extract-audio "https://www.youtube.com/watch?v=oHg5SJYRHA0"
+
+# Specify audio format and audio quality of extracted audio (between 0 (best) and 10 (worst), default = 5):
+yt-dlp --extract-audio --audio-format mp3 --audio-quality 0 "https://www.youtube.com/watch?v=oHg5SJYRHA0"
+
+# Download all playlists of YouTube channel/user keeping each playlist in separate directory:
+yt-dlp -o "%(uploader)s/%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" "https://www.youtube.com/user/TheLinuxFoundation/playlists"
+
+# Download Udemy course keeping each chapter in separate directory under MyVideos directory in your home:
+yt-dlp -u user -p password -P "~/MyVideos" -o "%(playlist)s/%(chapter_number)s - %(chapter)s/%(title)s.%(ext)s" "https://www.udemy.com/java-tutorial"
+
+# Download entire series season keeping each series and each season in separate directory under C:/MyVideos:
+yt-dlp -P "C:/MyVideos" -o "%(series)s/%(season_number)s - %(season)s/%(episode_number)s - %(episode)s.%(ext)s" "https://videomore.ru/kino_v_detalayah/5_sezon/367617"
+
+# Get Metadata
+
+yt-dlp --extract-audio --audio-format mp3 --write-info-json --audio-quality 0 "https://music.youtube.com/watch?v=_Ca8ISZ70uY&si=fYEtboSqqd-sIi8q"
+
+debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: Cryptodome-3.23.0, brotli-1.2.0, certifi-2026.01.04, mutagen-1.47.0, requests-2.32.5, sqlite3-3.45.1, urllib3-2.6.3, websockets-15.0.1, yt_dlp_ejs-0.4.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests, websockets
+[debug] Plugin directories: none
+[debug] Loaded 1856 extractors
+[debug] [youtube] [pot] PO Token Providers: none
+[debug] [youtube] [pot] PO Token Cache Providers: memory
+[debug] [youtube] [pot] PO Token Cache Spec Providers: webpo
+[debug] [youtube] [jsc] JS Challenge Providers: bun (unavailable), deno (unavailable), node (unavailable), quickjs (unavailable)
+[youtube] Extracting URL: https://music.youtube.com/watch?v=pTt9Cl8dCJo&si=tUCRbWioL0aIwGin
+[youtube] pTt9Cl8dCJo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[debug] [youtube] Forcing "tv" player JS variant for player 1798f86c
+        original url = /s/player/1798f86c/player_es6.vflset/en_US/base.js
+[youtube] pTt9Cl8dCJo: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] pTt9Cl8dCJo: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr5---sn-aigl6ner.googlevideo.com/videoplayback?expire=1771085958&ei=JkyQaZPYNL-I6dsP1NiEsQ0&ip=149.50.173.227&id=o-AJTjVDjX8rOO8UTWQ9ExHrra2zzvKvRygHJfmJvwTi2o&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=385&met=1771064358%2C&mh=ay&mm=31%2C26&mn=sn-aigl6ner%2Csn-5hne6nsk&ms=au%2Conr&mv=m&mvi=5&pl=22&rms=au%2Cau&initcwndbps=16263750&bui=AVNa5-zclomE8WkpEt291_g1ktLUaxEr_qHfJ8hxAjzBC9Fm2FJOTjhxSQXPONjO1-Fp1Lcd3AlRkzku&spc=6dlaFIRbztl0&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3211316&dur=186.381&lmt=1760163867592586&mt=1771063998&fvip=3&keepalive=yes&fexp=51552689%2C51565116%2C51565681%2C51580968%2C51772949&c=ANDROID_VR&txp=4432534&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRQIhAMYZndA_9jnaj-gqYcow8hJnPf5cWpCXZpn_J4r0H-x2AiAo8Qq6e9EHWZeGnxX3-U4bDxAXKi8a_hhHW2UOVL_DTg%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRgIhAN6ZrvCnjL3K2M1IDGTGq4FzrGSnrsIiqsUV1_biW4SRAiEA2vq_JUggQW0Lsm7_dqU8kUpJg4FXvBQgtK8ssJf6FWU%3D"
+[download] Destination: Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].webm
+[download] 100% of    3.06MiB in 00:00:01 at 2.75MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].webm'
+[ExtractAudio] Destination: Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].webm' -vn -acodec copy -movflags +faststart 'file:Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].opus'
+Deleting original file Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].webm (pass -k to keep)
+[Metadata] Adding metadata to "Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=Emma Harner - “Yes Man” (Official Video)' -metadata date=20250712 -metadata 'description=Emma Harner'"'"'s debut EP '"'"'Taking My Side'"'"' out now! 
+https://sndo.ffm.to/3r63pwd
+
+Come see Emma on her first headline tour!
+Los Angeles - Nov 8th, 2025 
+New York - Nov 10th, 2025
+London - Nov 22nd, 2025
+Berlin - Nov 23rd, 2025
+Tickets: https://emmaharner.com/shows
+
+Credits:
+Producer: Chelsea Marine @producedbychelsea
+Production Company: Check It Productions @checkitproductions
+Director + Editor: Annie Wang @einnaew
+Director of Photography: Karl Birchley @karlbirchley
+Assistant Camera: Jacob Muff @dpjacobmuff
+Gaffer: Barry Joyce
+Key Grip: Paul Eichler
+Grip: Andy Morrison @andyxmorr
+Production Designer: Olivia Benson @oatmealsoups
+Production Assistant: Bill Griepenstroh @billgrip
+BTS Photographer: Elaina Franzen @rottenswan.mp4
+Location: Shannon Harner and Philip Goddard
+Starring: Emma Harner @emmaharner + Jack Amen @jacktamen
+Writer: Madeline Schmit @madeline_schmit
+Colorist: Carter Knopik @c.knopik
+
+Lyrics: 
+You were in love with me that summer
+If it’s true, why tell me now? 
+Put down your camera, I’ll outrun it
+you’re just a picture of doubt
+
+I’d call your bluff
+You’d let me drive
+If I was better at taking my side
+I got you there
+You gave me hell
+It’s just as well
+
+Go ahead, make the joke
+You know I hate to watch you try 
+Make a face like it’s nothing 
+Get caught in a lie
+
+I’d call your bluff
+You’d let me drive
+If I was better at taking my side
+I got you there
+You gave me hell
+It’s just as well
+It’s just as well
+
+So take me for a pushover
+I’ll never be more
+Than what I am
+A big yes man
+I understand
+
+You take me for a pushover
+I’ll never be more
+Than what I am
+A big yes man
+I understand
+
+Radio way too loud
+Turn it down for a minute
+Tell me I saved your life
+I know I didn’t' -metadata 'synopsis=Emma Harner'"'"'s debut EP '"'"'Taking My Side'"'"' out now! 
+https://sndo.ffm.to/3r63pwd
+
+Come see Emma on her first headline tour!
+Los Angeles - Nov 8th, 2025 
+New York - Nov 10th, 2025
+London - Nov 22nd, 2025
+Berlin - Nov 23rd, 2025
+Tickets: https://emmaharner.com/shows
+
+Credits:
+Producer: Chelsea Marine @producedbychelsea
+Production Company: Check It Productions @checkitproductions
+Director + Editor: Annie Wang @einnaew
+Director of Photography: Karl Birchley @karlbirchley
+Assistant Camera: Jacob Muff @dpjacobmuff
+Gaffer: Barry Joyce
+Key Grip: Paul Eichler
+Grip: Andy Morrison @andyxmorr
+Production Designer: Olivia Benson @oatmealsoups
+Production Assistant: Bill Griepenstroh @billgrip
+BTS Photographer: Elaina Franzen @rottenswan.mp4
+Location: Shannon Harner and Philip Goddard
+Starring: Emma Harner @emmaharner + Jack Amen @jacktamen
+Writer: Madeline Schmit @madeline_schmit
+Colorist: Carter Knopik @c.knopik
+
+Lyrics: 
+You were in love with me that summer
+If it’s true, why tell me now? 
+Put down your camera, I’ll outrun it
+you’re just a picture of doubt
+
+I’d call your bluff
+You’d let me drive
+If I was better at taking my side
+I got you there
+You gave me hell
+It’s just as well
+
+Go ahead, make the joke
+You know I hate to watch you try 
+Make a face like it’s nothing 
+Get caught in a lie
+
+I’d call your bluff
+You’d let me drive
+If I was better at taking my side
+I got you there
+You gave me hell
+It’s just as well
+It’s just as well
+
+So take me for a pushover
+I’ll never be more
+Than what I am
+A big yes man
+I understand
+
+You take me for a pushover
+I’ll never be more
+Than what I am
+A big yes man
+I understand
+
+Radio way too loud
+Turn it down for a minute
+Tell me I saved your life
+I know I didn’t' -metadata 'purl=https://www.youtube.com/watch?v=pTt9Cl8dCJo' -metadata 'comment=https://www.youtube.com/watch?v=pTt9Cl8dCJo' -metadata 'artist=Emma Harner' -metadata genre=Music -metadata:s:0 language=eng -movflags +faststart 'file:Emma Harner - “Yes Man” (Official Video) [pTt9Cl8dCJo].temp.opus'
+10:19:20 jay@jay-B550M-DS3H Music → 
+
+
+
+[debug] Command-line config: ['--verbose', '--extract-audio', '--audio-quality', '0', '--embed-metadata', 'https://music.youtube.com/watch?v=fQhivehWI8E&si=BEUTapB8pWyDXU0n']
+[debug] Encodings: locale UTF-8, fs utf-8, pref UTF-8, out utf-8, error utf-8, screen utf-8
+[debug] yt-dlp version stable@2026.02.04 from yt-dlp/yt-dlp [c677d866d] (pip)
+[debug] Python 3.11.12 (CPython x86_64 64bit) - Linux-6.8.0-90-generic-x86_64-with-glibc2.39 (OpenSSL 3.0.13 30 Jan 2024, glibc 2.39)
+[debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: Cryptodome-3.23.0, brotli-1.2.0, certifi-2026.01.04, mutagen-1.47.0, requests-2.32.5, sqlite3-3.45.1, urllib3-2.6.3, websockets-15.0.1, yt_dlp_ejs-0.4.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests, websockets
+[debug] Plugin directories: none
+[debug] Loaded 1856 extractors
+[debug] [youtube] [pot] PO Token Providers: none
+[debug] [youtube] [pot] PO Token Cache Providers: memory
+[debug] [youtube] [pot] PO Token Cache Spec Providers: webpo
+[debug] [youtube] [jsc] JS Challenge Providers: bun (unavailable), deno (unavailable), node (unavailable), quickjs (unavailable)
+[youtube] Extracting URL: https://music.youtube.com/watch?v=fQhivehWI8E&si=BEUTapB8pWyDXU0n
+[youtube] fQhivehWI8E: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[debug] [youtube] Forcing "tv" player JS variant for player 1798f86c
+        original url = /s/player/1798f86c/player_es6.vflset/en_US/base.js
+[youtube] fQhivehWI8E: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] fQhivehWI8E: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr2---sn-aigl6nze.googlevideo.com/videoplayback?expire=1771086173&ei=_UyQaZLjLtW-mLAPlrXzoQM&ip=149.50.173.227&id=o-AJrUFuj7rb92pztfRG3VPTCXvp_wY8MySdaBAqipcepK&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=363&met=1771064573%2C&mh=C5&mm=31%2C26&mn=sn-aigl6nze%2Csn-5hne6nz6&ms=au%2Conr&mv=m&mvi=2&pl=22&rms=au%2Cau&initcwndbps=16263750&bui=AW-iu_qyFXB27v_1KYgFL7k1Fi-9ncwa8vb2NWe293-BebWJODty-bx8BVjEOnGDfB4eAdPqo63_XNMm&spc=q5xjPJVewn8f&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=1744813&dur=94.881&lmt=1732292763384569&mt=1771064221&fvip=2&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=4532434&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRAIgNW7bYMGXMujRUsg8y4gaLuvHUWoibUDi3lKdmbSkpu0CIFP1fg-xKJMPCEgNHuLnnfe7JDtdcc8izpgIPzQswUGN&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRgIhANI8fFQEMzKykGONdraUEK93SZaNXTy8miIBqsPoQYsiAiEAooN1HIyjgCZqWarMq8ttRfPM_nMxYhwk45n4Rsm8r-M%3D"
+[download] Destination: In My Life [fQhivehWI8E].webm
+[download] 100% of    1.66MiB in 00:00:00 at 4.97MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:In My Life [fQhivehWI8E].webm'
+[ExtractAudio] Destination: In My Life [fQhivehWI8E].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:In My Life [fQhivehWI8E].webm' -vn -acodec copy -movflags +faststart 'file:In My Life [fQhivehWI8E].opus'
+Deleting original file In My Life [fQhivehWI8E].webm (pass -k to keep)
+[Metadata] Adding metadata to "In My Life [fQhivehWI8E].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:In My Life [fQhivehWI8E].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=In My Life' -metadata date=20220130 -metadata 'description=Beatles got me very much these past years...' -metadata 'synopsis=Beatles got me very much these past years...' -metadata 'purl=https://www.youtube.com/watch?v=fQhivehWI8E' -metadata 'comment=https://www.youtube.com/watch?v=fQhivehWI8E' -metadata 'artist=Mateus Asato' -metadata genre=Music -movflags +faststart 'file:In My Life [fQhivehWI8E].temp.opus'

@@ -1,0 +1,642 @@
+[debug] Command-line config: ['--verbose', '--extract-audio', '--audio-quality', '0', '--embed-metadata', 'https://music.youtube.com/playlist?list=OLAK5uy_mVsq5dqDbUURa4ppOHv0l1rJRaWYoIH6I&si=1V_g9da1jqweO9z9']
+[debug] Encodings: locale UTF-8, fs utf-8, pref UTF-8, out utf-8, error utf-8, screen utf-8
+[debug] yt-dlp version stable@2026.02.04 from yt-dlp/yt-dlp [c677d866d] (pip)
+[debug] Python 3.11.12 (CPython x86_64 64bit) - Linux-6.8.0-90-generic-x86_64-with-glibc2.39 (OpenSSL 3.0.13 30 Jan 2024, glibc 2.39)
+[debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: Cryptodome-3.23.0, brotli-1.2.0, certifi-2026.01.04, mutagen-1.47.0, requests-2.32.5, sqlite3-3.45.1, urllib3-2.6.3, websockets-15.0.1, yt_dlp_ejs-0.4.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests, websockets
+[debug] Plugin directories: none
+[debug] Loaded 1856 extractors
+[youtube:tab] Extracting URL: https://music.youtube.com/playlist?list=OLAK5uy_mVsq5dqDbUURa4ppOHv0l1rJRaWYoIH6I&si=1V_g9da1jqweO9z9
+WARNING: [youtube:tab] YouTube Music is not directly supported. Redirecting to https://www.youtube.com/playlist?list=OLAK5uy_mVsq5dqDbUURa4ppOHv0l1rJRaWYoIH6I&si=1V_g9da1jqweO9z9
+[youtube:tab] OLAK5uy_mVsq5dqDbUURa4ppOHv0l1rJRaWYoIH6I: Downloading webpage
+[youtube:tab] OLAK5uy_mVsq5dqDbUURa4ppOHv0l1rJRaWYoIH6I: Redownloading playlist API JSON with unavailable videos
+[download] Downloading playlist: Album - Her Side
+[youtube:tab] Playlist Album - Her Side: Downloading 7 items of 7
+[download] Downloading item 1 of 7
+[debug] [youtube] [pot] PO Token Providers: none
+
+
+gvsbipvaep8MXZw2Szs972a-4&si=HnBEnB_h2pirs2iJ"
+[debug] Command-line config: ['--verbose', '--extract-audio', '--audio-quality', '0', '--embed-metadata', 'https://music.youtube.com/playlist?list=OLAK5uy_ltWJJg7Egvsbipvaep8MXZw2Szs972a-4&si=HnBEnB_h2pirs2iJ']
+[debug] Encodings: locale UTF-8, fs utf-8, pref UTF-8, out utf-8, error utf-8, screen utf-8
+[debug] yt-dlp version stable@2026.02.04 from yt-dlp/yt-dlp [c677d866d] (pip)
+[debug] Python 3.11.12 (CPython x86_64 64bit) - Linux-6.8.0-90-generic-x86_64-with-glibc2.39 (OpenSSL 3.0.13 30 Jan 2024, glibc 2.39)
+[debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: Cryptodome-3.23.0, brotli-1.2.0, certifi-2026.01.04, mutagen-1.47.0, requests-2.32.5, sqlite3-3.45.1, urllib3-2.6.3, websockets-15.0.1, yt_dlp_ejs-0.4.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests, websockets
+[debug] Plugin directories: none
+[debug] Loaded 1856 extractors
+[youtube:tab] Extracting URL: https://music.youtube.com/playlist?list=OLAK5uy_ltWJJg7Egvsbipvaep8MXZw2Szs972a-4&si=HnBEnB_h2pirs2iJ
+WARNING: [youtube:tab] YouTube Music is not directly supported. Redirecting to https://www.youtube.com/playlist?list=OLAK5uy_ltWJJg7Egvsbipvaep8MXZw2Szs972a-4&si=HnBEnB_h2pirs2iJ
+[youtube:tab] OLAK5uy_ltWJJg7Egvsbipvaep8MXZw2Szs972a-4: Downloading webpage
+[youtube:tab] OLAK5uy_ltWJJg7Egvsbipvaep8MXZw2Szs972a-4: Redownloading playlist API JSON with unavailable videos
+[download] Downloading playlist: Album - Taking My Side
+[youtube:tab] Playlist Album - Taking My Side: Downloading 5 items of 5
+[download] Downloading item 1 of 5
+[debug] [youtube] [pot] PO Token Providers: none
+[debug] [youtube] [pot] PO Token Cache Providers: memory
+[debug] [youtube] [pot] PO Token Cache Spec Providers: webpo
+[debug] [youtube] [jsc] JS Challenge Providers: bun (unavailable), deno (unavailable), node (unavailable), quickjs (unavailable)
+[youtube] Extracting URL: https://music.youtube.com/watch?v=q8YVO0Ur_rs
+[youtube] q8YVO0Ur_rs: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[debug] [youtube] Forcing "tv" player JS variant for player 1798f86c
+        original url = /s/player/1798f86c/player_es6.vflset/en_US/base.js
+[youtube] q8YVO0Ur_rs: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] q8YVO0Ur_rs: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr2---sn-2oaig5-5f.googlevideo.com/videoplayback?expire=1771113598&ei=HriQabDeIMD1v_IPpY_WwAg&ip=149.50.173.227&id=o-AJEsvsHRUURXMBhSIzQX3lCpfC2lrTLEV6HXtSRqzVC1&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=328&met=1771091998%2C&mh=GX&mm=31%2C29&mn=sn-2oaig5-5f%2Csn-aigl6ns6&ms=au%2Crdu&mv=m&mvi=2&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4368750&bui=AVNa5-xqX--TI-zgw058v98f-09Nq_KMt_UQNrs1ol_kFANEIGKamkJ3u-SbPx2wOEpPqOUGXENkUTQ_&spc=6dlaFDVNUJFL&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=2802195&dur=158.601&lmt=1768467945900718&mt=1771091585&fvip=4&keepalive=yes&fexp=51552689%2C51565115%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRAIhAJ0dUeJ9ipN3LFZOYBluKsfA82DFpocy2R-Egx_g7qEzAh8qPH5ZUA2hG0IVLJXWL_VAUTAr2UmrzSNBm7MnTwOb&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgPGr3rnLW8TAhRXFnGhzfo2kfXdxO9hB-Lz8XY0U-4DgCIDIV7uYZiJ1xEErt_bxNMZtMJpTfrXJHi_pLD2oaM1Yl"
+[download] Destination: False Alarm [q8YVO0Ur_rs].webm
+[download] 100% of    2.67MiB in 00:00:00 at 6.84MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:False Alarm [q8YVO0Ur_rs].webm'
+[ExtractAudio] Destination: False Alarm [q8YVO0Ur_rs].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:False Alarm [q8YVO0Ur_rs].webm' -vn -acodec copy -movflags +faststart 'file:False Alarm [q8YVO0Ur_rs].opus'
+Deleting original file False Alarm [q8YVO0Ur_rs].webm (pass -k to keep)
+[Metadata] Adding metadata to "False Alarm [q8YVO0Ur_rs].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:False Alarm [q8YVO0Ur_rs].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=False Alarm' -metadata date=20251211 -metadata 'description=Provided to YouTube by Emma Harner
+
+False Alarm · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by Emma Harner
+
+False Alarm · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=q8YVO0Ur_rs' -metadata 'comment=https://www.youtube.com/watch?v=q8YVO0Ur_rs' -metadata 'artist=Emma Harner' -metadata genre=Music -metadata 'album=Taking My Side' -movflags +faststart 'file:False Alarm [q8YVO0Ur_rs].temp.opus'
+[download] Downloading item 2 of 5
+[youtube] Extracting URL: https://music.youtube.com/watch?v=Z9P2AkdRStE
+[youtube] Z9P2AkdRStE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] Z9P2AkdRStE: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] Z9P2AkdRStE: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr4---sn-aigzrnld.googlevideo.com/videoplayback?expire=1771113600&ei=ILiQae6JE7-0v_IP0YKi6AI&ip=149.50.173.227&id=o-AC5WOFfaPiZu7Ad6ZS8jAG-Oj4s480SjASMDD_SKgUAR&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=222&met=1771092000%2C&mh=yK&mm=31%2C29&mn=sn-aigzrnld%2Csn-aigl6nzk&ms=au%2Crdu&mv=m&mvi=4&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4368750&bui=AVNa5-wzxF-xjE1ICUJtI_ueSTARhtc5HkgCapTGJThhWAQNiR482pZk_DsZ0De8NJ5S-nifZ5k1BIuI&spc=6dlaFKs65Lvj&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3572249&dur=205.901&lmt=1768467944740673&mt=1771091585&fvip=2&keepalive=yes&fexp=51552689%2C51565115%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRgIhAPcu9oSrjhUqh2grJLmhtDGCD7jcZy-yCSIkrHZ4ClgxAiEAjRvWDm-rCCm4_3ohQDDSAfsx4lIawXb2XnTnzR7T_LQ%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRgIhAMQhPe2HgGdr-rvfNtUwimzvRn9frlsE7nPyo2n0L8ZUAiEArzSyBYyW1BJ3n2BDWtA1TZtkAiDZEtD_BAy-1YWh788%3D"
+[download] Destination: Do It [Z9P2AkdRStE].webm
+[download] 100% of    3.41MiB in 00:00:00 at 6.98MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Do It [Z9P2AkdRStE].webm'
+[ExtractAudio] Destination: Do It [Z9P2AkdRStE].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Do It [Z9P2AkdRStE].webm' -vn -acodec copy -movflags +faststart 'file:Do It [Z9P2AkdRStE].opus'
+Deleting original file Do It [Z9P2AkdRStE].webm (pass -k to keep)
+[Metadata] Adding metadata to "Do It [Z9P2AkdRStE].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Do It [Z9P2AkdRStE].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=Do It' -metadata date=20251211 -metadata 'description=Provided to YouTube by Emma Harner
+
+Do It · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by Emma Harner
+
+Do It · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=Z9P2AkdRStE' -metadata 'comment=https://www.youtube.com/watch?v=Z9P2AkdRStE' -metadata 'artist=Emma Harner' -metadata genre=Music -metadata 'album=Taking My Side' -movflags +faststart 'file:Do It [Z9P2AkdRStE].temp.opus'
+[download] Downloading item 3 of 5
+[youtube] Extracting URL: https://music.youtube.com/watch?v=yO2nSvmOioU
+[youtube] yO2nSvmOioU: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] yO2nSvmOioU: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] yO2nSvmOioU: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr3---sn-aigl6nl7.googlevideo.com/videoplayback?expire=1771113602&ei=IriQaZuuDPSFxs0PovDo8QM&ip=149.50.173.227&id=o-AF9AfuxIu35b9_5fFX-NYnrJQ0bfYlTxLD780pWelSFC&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=248&met=1771092002%2C&mh=BG&mm=31%2C26&mn=sn-aigl6nl7%2Csn-5hneknes&ms=au%2Conr&mv=m&mvi=3&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4501250&bui=AVNa5-wmhXFpDyR-uyHACtaDtDhaa-7CuHlmuwOuaBWdkEYH3tnmk7pXQP8cWxCvkPpuEDP_zXo-c0cC&spc=6dlaFMI1z9bC&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3214691&dur=186.341&lmt=1768467910250441&mt=1771091585&fvip=4&keepalive=yes&fexp=51552689%2C51565115%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRgIhAMazNSi0hfwXghDqFFM2QEc5_PheSYgPb2FY7P3rqL3YAiEApyT8tZpAcvf-ZiDTXpowugHhAXi5nsWl8nX6XMD5cn8%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgO0smRL9dk3W-oPPifv7sDr6a-84uAbPnyQviNmeZRt8CIBaFOcNNmLNrobWT4vLkD-6mdjjVPQPWngZwpUzJhswa"
+[download] Destination: Yes Man [yO2nSvmOioU].webm
+[download] 100% of    3.07MiB in 00:00:00 at 3.70MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Yes Man [yO2nSvmOioU].webm'
+[ExtractAudio] Destination: Yes Man [yO2nSvmOioU].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Yes Man [yO2nSvmOioU].webm' -vn -acodec copy -movflags +faststart 'file:Yes Man [yO2nSvmOioU].opus'
+Deleting original file Yes Man [yO2nSvmOioU].webm (pass -k to keep)
+[Metadata] Adding metadata to "Yes Man [yO2nSvmOioU].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Yes Man [yO2nSvmOioU].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=Yes Man' -metadata date=20251211 -metadata 'description=Provided to YouTube by Emma Harner
+
+Yes Man · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Composer: Emma Harner
+Lyricist: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by Emma Harner
+
+Yes Man · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Composer: Emma Harner
+Lyricist: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=yO2nSvmOioU' -metadata 'comment=https://www.youtube.com/watch?v=yO2nSvmOioU' -metadata 'artist=Emma Harner' -metadata genre=Music -metadata 'album=Taking My Side' -movflags +faststart 'file:Yes Man [yO2nSvmOioU].temp.opus'
+[download] Downloading item 4 of 5
+[youtube] Extracting URL: https://music.youtube.com/watch?v=_RYi2HzABu4
+[youtube] _RYi2HzABu4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] _RYi2HzABu4: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] _RYi2HzABu4: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr4---sn-aigl6nsr.googlevideo.com/videoplayback?expire=1771113604&ei=JLiQac2xHKbCv_IPibug4AY&ip=149.50.173.227&id=o-AKTcldsqn1KLKLqZhiB_Nb--73mRssECkvkwe0V7wZIV&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=265&met=1771092004%2C&mh=3D&mm=31%2C26&mn=sn-aigl6nsr%2Csn-5hnekn7d&ms=au%2Conr&mv=m&mvi=4&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4501250&bui=AVNa5-wN6wxF3L81NWGBG5VzkcCxUzPNQzIuDWyRuEWKHaMqCKQ9C2q4RWpviG9JcyhOTltyl68MPhGT&spc=6dlaFAlQ5bk2&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=4243728&dur=228.061&lmt=1768467929029139&mt=1771091585&fvip=5&keepalive=yes&fexp=51552689%2C51565115%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRQIhAIShNQPIPhUroL8MBG8OIth7GnJChF6ZdE2nRECdyiPoAiA5SeUBSmVvXXqaonwyDqWULlsf9ZyvOCOjvFOyptU3kA%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRQIgE8yGLDT-rfkbi9pzo4HkSIV0OVuoKTuUrpLuiQcgzOsCIQCJUtK8DPW1O6E0ZagYnlRQEECqz8OI2yDgx26aPBOMFQ%3D%3D"
+[download] Destination: Lifetimes [_RYi2HzABu4].webm
+[download] 100% of    4.05MiB in 00:00:00 at 7.67MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Lifetimes [_RYi2HzABu4].webm'
+[ExtractAudio] Destination: Lifetimes [_RYi2HzABu4].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Lifetimes [_RYi2HzABu4].webm' -vn -acodec copy -movflags +faststart 'file:Lifetimes [_RYi2HzABu4].opus'
+Deleting original file Lifetimes [_RYi2HzABu4].webm (pass -k to keep)
+[Metadata] Adding metadata to "Lifetimes [_RYi2HzABu4].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Lifetimes [_RYi2HzABu4].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata title=Lifetimes -metadata date=20251211 -metadata 'description=Provided to YouTube by Emma Harner
+
+Lifetimes · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by Emma Harner
+
+Lifetimes · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=_RYi2HzABu4' -metadata 'comment=https://www.youtube.com/watch?v=_RYi2HzABu4' -metadata 'artist=Emma Harner' -metadata genre=Music -metadata 'album=Taking My Side' -movflags +faststart 'file:Lifetimes [_RYi2HzABu4].temp.opus'
+[download] Downloading item 5 of 5
+[youtube] Extracting URL: https://music.youtube.com/watch?v=59A0mqQ2zuo
+[youtube] 59A0mqQ2zuo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 59A0mqQ2zuo: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] 59A0mqQ2zuo: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr4---sn-aigzrnsr.googlevideo.com/videoplayback?expire=1771113606&ei=JriQaYucJoCx0u8P9tfcuQc&ip=149.50.173.227&id=o-AB7t-ZdT07Z9cuO-VCCIEezX2uqyMNd1gEsTn-kABuHQ&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=368&met=1771092006%2C&mh=Kx&mm=31%2C29&mn=sn-aigzrnsr%2Csn-aigl6nz7&ms=au%2Crdu&mv=m&mvi=4&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4368750&bui=AW-iu_qDVFpydNjMK29pPVvlw9l5s_glS1_xEUlXZVddGhQFoH9H_5AwK_F15K_YTx098mmswOy0GErO&spc=q5xjPLHYvwAJ&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=1806048&dur=98.961&lmt=1768467898946367&mt=1771091585&fvip=3&keepalive=yes&fexp=51552689%2C51565115%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRQIhALaAQdzg1Kic_sSfNevXkc9Byy2JLPB9ZkP1Lj9WyeULAiAxeZ9FY7DmXtnsfjix2fVjeKATdb8yJvnA9T02WorEVw%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRQIhAI0_bdPgCiGA5TB5Qocg-_r-lcsCLRyCHTKdPTgJORkVAiBDXkDiVcGqpoBZmJBZV0ZqgqbAt0FgcmPeq9OxdL7vbA%3D%3D"
+[download] Destination: Again [59A0mqQ2zuo].webm
+[download] 100% of    1.72MiB in 00:00:00 at 5.71MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Again [59A0mqQ2zuo].webm'
+[ExtractAudio] Destination: Again [59A0mqQ2zuo].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Again [59A0mqQ2zuo].webm' -vn -acodec copy -movflags +faststart 'file:Again [59A0mqQ2zuo].opus'
+Deleting original file Again [59A0mqQ2zuo].webm (pass -k to keep)
+[Metadata] Adding metadata to "Again [59A0mqQ2zuo].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Again [59A0mqQ2zuo].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata title=Again -metadata date=20251211 -metadata 'description=Provided to YouTube by Emma Harner
+
+Again · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by Emma Harner
+
+Again · Emma Harner
+
+Taking My Side
+
+℗ 2025 Emma Harner
+
+Released on: 2025-07-11
+
+Main Artist: Emma Harner
+Producer: Philip Etherington
+Lyricist: Emma Harner
+Composer: Emma Harner
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=59A0mqQ2zuo' -metadata 'comment=https://www.youtube.com/watch?v=59A0mqQ2zuo' -metadata 'artist=Emma Harner' -metadata genre=Music -metadata 'album=Taking My Side' -movflags +faststart 'file:Again [59A0mqQ2zuo].temp.opus'
+[download] Finished downloading playlist: Album - Taking My Side
+
+[debug] [youtube] [pot] PO Token Cache Providers: memory
+[debug] [youtube] [pot] PO Token Cache Spec Providers: webpo
+[debug] [youtube] [jsc] JS Challenge Providers: bun (unavailable), deno (unavailable), node (unavailable), quickjs (unavailable)
+[youtube] Extracting URL: https://music.youtube.com/watch?v=W_PTUzzyvsM
+[youtube] W_PTUzzyvsM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[debug] [youtube] Forcing "tv" player JS variant for player 1798f86c
+        original url = /s/player/1798f86c/player_es6.vflset/en_US/base.js
+[youtube] W_PTUzzyvsM: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] W_PTUzzyvsM: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr5---sn-aigl6ner.googlevideo.com/videoplayback?expire=1771113025&ei=4bWQaaWcNJTK6dsP5fqF2Ag&ip=149.50.173.227&id=o-AEyrMO0URxdDjaq4QDgjm_tE1_pzuH9claysw-tlQI1j&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=301&met=1771091425%2C&mh=Sc&mm=31%2C26&mn=sn-aigl6ner%2Csn-5hnekn76&ms=au%2Conr&mv=m&mvi=5&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4403750&bui=AVNa5-xm6i1S1N48aNz4_mB2tWtrTRjbi9PQuug6MxpsgixvAXWojLTUX--L-nh3518U47ULwIM8u5i4&spc=6dlaFMxRKpuF&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3998646&dur=237.041&lmt=1767978167650309&mt=1771090866&fvip=5&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRQIhALzHVTwmzb3tCMIFwFYu88k1hsvMEreKRAXTkrgIRxwxAiBi9mf8yJtCS6eWbRjuNER9psSk2JVeL-vqDLjDE4iu9Q%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgTmnJo-vBj3hRMXO3HM3mkRxhDOOOJTbbf2Bp24VsK1gCIFkoVje_5jfBPaw-n9zjY3natPFONIJu2RZ7QToFKGRo"
+[download] Destination: Rumours [W_PTUzzyvsM].webm
+[download] 100% of    3.81MiB in 00:00:00 at 6.11MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Rumours [W_PTUzzyvsM].webm'
+[ExtractAudio] Destination: Rumours [W_PTUzzyvsM].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Rumours [W_PTUzzyvsM].webm' -vn -acodec copy -movflags +faststart 'file:Rumours [W_PTUzzyvsM].opus'
+Deleting original file Rumours [W_PTUzzyvsM].webm (pass -k to keep)
+[Metadata] Adding metadata to "Rumours [W_PTUzzyvsM].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Rumours [W_PTUzzyvsM].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata title=Rumours -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+Rumours · Maddie Ashman · Madeline Ashman
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Additional Studio Producer: Chris W Ryan
+Additional Studio Producer: Bradley Hutchings (Guava)
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+Rumours · Maddie Ashman · Madeline Ashman
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Additional Studio Producer: Chris W Ryan
+Additional Studio Producer: Bradley Hutchings (Guava)
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=W_PTUzzyvsM' -metadata 'comment=https://www.youtube.com/watch?v=W_PTUzzyvsM' -metadata 'artist=Maddie Ashman, Madeline Ashman' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:Rumours [W_PTUzzyvsM].temp.opus'
+[download] Downloading item 2 of 7
+[youtube] Extracting URL: https://music.youtube.com/watch?v=Z5YKZizXJig
+[youtube] Z5YKZizXJig: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] Z5YKZizXJig: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] Z5YKZizXJig: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr4---sn-aigzrn7z.googlevideo.com/videoplayback?expire=1771113027&ei=47WQafLOK8aYv_IPwLau-Qo&ip=149.50.173.227&id=o-ANbOQFVsfKudbOLy7dwzoJg5YJtAbK6SViwmyJ7QTHVL&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=160&met=1771091427%2C&mh=MB&mm=31%2C29&mn=sn-aigzrn7z%2Csn-aigl6nz7&ms=au%2Crdu&mv=m&mvi=4&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4175000&bui=AVNa5-x-jCAxGa_-RnFHio0JUOzLDxe9x3a3K_kmwVYL4Z4ZsA6qjloo4K01qkcShALNfEUnsmTWABCs&spc=6dlaFHv3ogvS&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3009059&dur=180.421&lmt=1767977954951650&mt=1771090866&fvip=2&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRQIgCt05v3JaAKRZrCK2Ky1ZNwulhpqoN4WRnv2cb7av6eUCIQDzlOkVMqp7K5OfmbFTDsM8FzRrPXcl7HKqL3VnJ51t5A%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgDoFmrVSGxzlb09Wobzn9IiLS1j97mWEmqr3-mWqQ6hUCIFMSZtwGXXwhQsW3UOZMZVvkkvF1Fmo1zAznWLvuEEjR"
+[download] Destination: Jaded [Z5YKZizXJig].webm
+[download] 100% of    2.87MiB in 00:00:00 at 6.55MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Jaded [Z5YKZizXJig].webm'
+[ExtractAudio] Destination: Jaded [Z5YKZizXJig].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Jaded [Z5YKZizXJig].webm' -vn -acodec copy -movflags +faststart 'file:Jaded [Z5YKZizXJig].opus'
+Deleting original file Jaded [Z5YKZizXJig].webm (pass -k to keep)
+[Metadata] Adding metadata to "Jaded [Z5YKZizXJig].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Jaded [Z5YKZizXJig].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata title=Jaded -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+Jaded · Maddie Ashman
+
+Her Side
+
+℗ 2025 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Additional Studio Producer: Clemente Löhr
+Additional Studio Producer: Bradley Hutchings (Guava)
+Additional Studio Producer: Charlie Baker (Breaka)
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+Jaded · Maddie Ashman
+
+Her Side
+
+℗ 2025 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Additional Studio Producer: Clemente Löhr
+Additional Studio Producer: Bradley Hutchings (Guava)
+Additional Studio Producer: Charlie Baker (Breaka)
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=Z5YKZizXJig' -metadata 'comment=https://www.youtube.com/watch?v=Z5YKZizXJig' -metadata 'artist=Maddie Ashman' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:Jaded [Z5YKZizXJig].temp.opus'
+[download] Downloading item 3 of 7
+[youtube] Extracting URL: https://music.youtube.com/watch?v=054s1g4tWdY
+[youtube] 054s1g4tWdY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 054s1g4tWdY: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] 054s1g4tWdY: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr1---sn-aigzrnss.googlevideo.com/videoplayback?expire=1771113029&ei=5bWQaYryJqCG0u8PtZTMsQs&ip=149.50.173.227&id=o-AFiXGRBzRI3lZGSV10UDLH-AxPF40ZMno58TJv7hjJgT&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=246&met=1771091429%2C&mh=h9&mm=31%2C29&mn=sn-aigzrnss%2Csn-aigl6nsd&ms=au%2Crdu&mv=m&mvi=1&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4565000&bui=AW-iu_qw_59ef9NsQyuFITKXlIYzrFhrkQf_V9axbilkpjU_9kEwBCockmJv9LzzZD5uAJbchiYN18t8&spc=q5xjPM0XA-n1&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=2830811&dur=171.761&lmt=1767977951609918&mt=1771091111&fvip=2&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRAIgOIqEa2zOGvbwwo8lYm70CAOAUxAKUSWkrvDwnCkAtJ8CIELlI0_J9H5Q1q9msWNjmY4kbXUY2fxXwJTgVl9EFdrh&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIga4xtjgOHTwc8TWMlb8Io-jO38NmNlcQjqs7uxc6iIk4CIGsGiftiqzA7bVR9hHK4tbw3-lQOm90otXwn0ooUDMqB"
+[download] Destination: She Said [054s1g4tWdY].webm
+[download] 100% of    2.70MiB in 00:00:00 at 6.67MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:She Said [054s1g4tWdY].webm'
+[ExtractAudio] Destination: She Said [054s1g4tWdY].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:She Said [054s1g4tWdY].webm' -vn -acodec copy -movflags +faststart 'file:She Said [054s1g4tWdY].opus'
+Deleting original file She Said [054s1g4tWdY].webm (pass -k to keep)
+[Metadata] Adding metadata to "She Said [054s1g4tWdY].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:She Said [054s1g4tWdY].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=She Said' -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+She Said · Maddie Ashman · Madeline Ashman · Jessica Brown
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+She Said · Maddie Ashman · Madeline Ashman · Jessica Brown
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=054s1g4tWdY' -metadata 'comment=https://www.youtube.com/watch?v=054s1g4tWdY' -metadata 'artist=Maddie Ashman, Madeline Ashman, Jessica Brown' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:She Said [054s1g4tWdY].temp.opus'
+[download] Downloading item 4 of 7
+[youtube] Extracting URL: https://music.youtube.com/watch?v=jiW7DytQOhY
+[youtube] jiW7DytQOhY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] jiW7DytQOhY: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] jiW7DytQOhY: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr2---sn-aigzrnld.googlevideo.com/videoplayback?expire=1771113031&ei=57WQadr-GIfJ0u8PsdzkgAM&ip=149.50.173.227&id=o-AO-WsvFDelVOM41SQbSgAnR__29aZk0VdYx43JYCLUHc&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=104&met=1771091431%2C&mh=Y-&mm=31%2C29&mn=sn-aigzrnld%2Csn-aigl6ns6&ms=au%2Crdu&mv=m&mvi=2&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4175000&bui=AW-iu_p4HdnqSTa9gFG4TDs3CVyhkm8ImJ-ZH0X5Jt6xe4NeApQGTuKnKV6CV1SHxFogt0qTL0UR0scM&spc=q5xjPJ6i1kpg&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=5125330&dur=300.261&lmt=1767977985993963&mt=1771090866&fvip=5&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRAIgWujo5OYyDJlFSvIH8g4y4x4W-1Fg4g7LbHiw2UwGkNUCIFy1dxyZ_wBKDHtVvwLPL8LBxldGJ_-qjozVhHLY2U5s&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgS2z77SagBiE6IQoDERSEKoOGI2J4EkxgL-sI-GEw7u4CIE0njCzhfeaZ-rgFIEW4d4uexNFO10ruO3ZkAYAsI_9x"
+[download] Destination: Seraphim [jiW7DytQOhY].webm
+[download] 100% of    4.89MiB in 00:00:00 at 7.01MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Seraphim [jiW7DytQOhY].webm'
+[ExtractAudio] Destination: Seraphim [jiW7DytQOhY].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Seraphim [jiW7DytQOhY].webm' -vn -acodec copy -movflags +faststart 'file:Seraphim [jiW7DytQOhY].opus'
+Deleting original file Seraphim [jiW7DytQOhY].webm (pass -k to keep)
+[Metadata] Adding metadata to "Seraphim [jiW7DytQOhY].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Seraphim [jiW7DytQOhY].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata title=Seraphim -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+Seraphim · Maddie Ashman · Jessica Brown · Madeline Ashman
+
+Her Side
+
+℗ 2025 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Additional Studio Producer: Tim Gardner
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+Seraphim · Maddie Ashman · Jessica Brown · Madeline Ashman
+
+Her Side
+
+℗ 2025 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Additional Studio Producer: Tim Gardner
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=jiW7DytQOhY' -metadata 'comment=https://www.youtube.com/watch?v=jiW7DytQOhY' -metadata 'artist=Maddie Ashman, Jessica Brown, Madeline Ashman' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:Seraphim [jiW7DytQOhY].temp.opus'
+[download] Downloading item 5 of 7
+[youtube] Extracting URL: https://music.youtube.com/watch?v=ZWPscbWB-Mc
+[youtube] ZWPscbWB-Mc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] ZWPscbWB-Mc: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] ZWPscbWB-Mc: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr1---sn-aigzrnsz.googlevideo.com/videoplayback?expire=1771113033&ei=6bWQaY-9Lsmo8uMPm4iHgQ0&ip=149.50.173.227&id=o-ADsTcBRjjy-NyHb8AA3xcOjxHlZwafGIJV88l7bajdfD&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=351&met=1771091433%2C&mh=iC&mm=31%2C29&mn=sn-aigzrnsz%2Csn-aigl6nze&ms=au%2Crdu&mv=m&mvi=1&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4565000&bui=AW-iu_qQF8UgCIYvzHZCjUS9wLYspr_jouscrgVn39W0nAqxkc6wC9dvLhRyOqLCwVU1HCsO_9cNntOA&spc=q5xjPHtAkiPM&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=7807837&dur=427.721&lmt=1767978039336225&mt=1771091111&fvip=2&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRgIhAMr4EcaLqq0DfFMT6-6FlxKvLrb9z6IXJ1gG74FoQUcfAiEA3bRKbB0mVQ_-BU5QmxfguWu-CqLpO0rCyFpV-hglQA4%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgAluNwEMFU7pGEhvTrMegDPF6Mw2l-dHb8TZnszlaITsCIB6EuQnsSfD7RwLXnYDH-WjDXfROaig_833_kqJurC3c"
+[download] Destination: In Autumn My Heart Breaks [ZWPscbWB-Mc].webm
+[download] 100% of    7.45MiB in 00:00:00 at 8.73MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:In Autumn My Heart Breaks [ZWPscbWB-Mc].webm'
+[ExtractAudio] Destination: In Autumn My Heart Breaks [ZWPscbWB-Mc].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:In Autumn My Heart Breaks [ZWPscbWB-Mc].webm' -vn -acodec copy -movflags +faststart 'file:In Autumn My Heart Breaks [ZWPscbWB-Mc].opus'
+Deleting original file In Autumn My Heart Breaks [ZWPscbWB-Mc].webm (pass -k to keep)
+[Metadata] Adding metadata to "In Autumn My Heart Breaks [ZWPscbWB-Mc].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:In Autumn My Heart Breaks [ZWPscbWB-Mc].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=In Autumn My Heart Breaks' -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+In Autumn My Heart Breaks · Maddie Ashman
+
+Her Side
+
+℗ 2025 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+In Autumn My Heart Breaks · Maddie Ashman
+
+Her Side
+
+℗ 2025 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=ZWPscbWB-Mc' -metadata 'comment=https://www.youtube.com/watch?v=ZWPscbWB-Mc' -metadata 'artist=Maddie Ashman' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:In Autumn My Heart Breaks [ZWPscbWB-Mc].temp.opus'
+[download] Downloading item 6 of 7
+[youtube] Extracting URL: https://music.youtube.com/watch?v=zwqwbLmntWc
+[youtube] zwqwbLmntWc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] zwqwbLmntWc: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] zwqwbLmntWc: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr1---sn-ajaig5-5a.googlevideo.com/videoplayback?expire=1771113036&ei=7LWQafr3FK_cp-oPzonx-A0&ip=149.50.173.227&id=o-AHBX0COM0J46V2akcDMDVr5112g4uvg629g_hYvOau7F&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=353&met=1771091436%2C&mh=P4&mm=31%2C26&mn=sn-ajaig5-5a%2Csn-5hne6nsy&ms=au%2Conr&mv=m&mvi=1&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4403750&bui=AW-iu_otVa2zFUcj8udpWpVYkhJmGbPC-ElDloinALw3KJhbyN5ipEhqioEsobGNMEak4waQJ5QHKldm&spc=q5xjPIKT32rd&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=3136016&dur=182.481&lmt=1768473819044000&mt=1771090866&fvip=1&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRAIgT0hNF_hysHrJoyakO34bDX0Qw2sShwHeX1_qRZwlrA4CIEYYrkqERpTy1fWHlVhlBG3RJJ13pdueP9AxlRNy-OvP&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRAIgTmWfGmCViAks1dMGTKizPCfq9tfz3upXK2sVvXtO-PICIAgL-cnf8_PEzJa3AbDae_TlEvJ2rsthQDLrAieVc4Vm"
+[download] Destination: Waterlily [zwqwbLmntWc].webm
+[download] 100% of    2.99MiB in 00:00:01 at 2.96MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Waterlily [zwqwbLmntWc].webm'
+[ExtractAudio] Destination: Waterlily [zwqwbLmntWc].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Waterlily [zwqwbLmntWc].webm' -vn -acodec copy -movflags +faststart 'file:Waterlily [zwqwbLmntWc].opus'
+Deleting original file Waterlily [zwqwbLmntWc].webm (pass -k to keep)
+[Metadata] Adding metadata to "Waterlily [zwqwbLmntWc].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Waterlily [zwqwbLmntWc].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata title=Waterlily -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+Waterlily · Maddie Ashman
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Additional Studio Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+Waterlily · Maddie Ashman
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Additional Studio Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=zwqwbLmntWc' -metadata 'comment=https://www.youtube.com/watch?v=zwqwbLmntWc' -metadata 'artist=Maddie Ashman' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:Waterlily [zwqwbLmntWc].temp.opus'
+[download] Downloading item 7 of 7
+[youtube] Extracting URL: https://music.youtube.com/watch?v=6aOsk_m5HWg
+[youtube] 6aOsk_m5HWg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 6aOsk_m5HWg: Downloading android vr player API JSON
+[debug] Sort order given by extractor: quality, res, fps, hdr:12, source, vcodec, channels, acodec, lang, proto
+[debug] Formats sorted by: hasvid, ie_pref, quality, res, fps, hdr:12(7), source, vcodec, channels, acodec, lang, proto, size, br, asr, vext, aext, hasaud, id
+[info] 6aOsk_m5HWg: Downloading 1 format(s): 251
+[debug] Invoking http downloader on "https://rr4---sn-aigzrnss.googlevideo.com/videoplayback?expire=1771113038&ei=7rWQaZ_EJuucv_IPmv2FgAM&ip=149.50.173.227&id=o-AME-LDWzIke5S6Xwtv6hv2BetX-SBhseqf-S0fJBqqRI&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=234&met=1771091438%2C&mh=Qp&mm=31%2C29&mn=sn-aigzrnss%2Csn-aigl6nl7&ms=au%2Crdu&mv=m&mvi=4&pl=22&rms=au%2Cau&gcr=gb&initcwndbps=4565000&bui=AVNa5-y_lmsP0qDLNNP5SMr3p8N-a6PsgLuTi5C3BqRGA4OfDLjatE5T2eSYJUsKF4ot1HAmEQrn6rJO&spc=6dlaFIchujkq&vprv=1&svpuc=1&mime=audio%2Fwebm&rqh=1&gir=yes&clen=5021492&dur=304.061&lmt=1768473960968368&mt=1771091111&fvip=5&keepalive=yes&fexp=51552689%2C51565116%2C51565682%2C51580968%2C51772949&c=ANDROID_VR&txp=2318224&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJEij0EwRAIgMu5RACv2tL7RsNoqFCqBonQQst_LNhiK2XdF4o9Ym8gCIFEobb5aFjVrERjGIPkMBRXKksZGX-a5IWQATZIegbuZ&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRQIhAKybV_TPy_98tZfuyylK1jMFB7X9qCneE8fa_K0Zcr9ZAiACSzXhNwZBu2RfKCAQ6SdlQ1TRpO9tBEmpbk6gcv_WnQ%3D%3D"
+[download] Destination: Behind Closed Eyes [6aOsk_m5HWg].webm
+[download] 100% of    4.79MiB in 00:00:00 at 9.11MiB/s
+[debug] ffmpeg command line: ffprobe -show_streams 'file:Behind Closed Eyes [6aOsk_m5HWg].webm'
+[ExtractAudio] Destination: Behind Closed Eyes [6aOsk_m5HWg].opus
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Behind Closed Eyes [6aOsk_m5HWg].webm' -vn -acodec copy -movflags +faststart 'file:Behind Closed Eyes [6aOsk_m5HWg].opus'
+Deleting original file Behind Closed Eyes [6aOsk_m5HWg].webm (pass -k to keep)
+[Metadata] Adding metadata to "Behind Closed Eyes [6aOsk_m5HWg].opus"
+[debug] ffmpeg command line: ffmpeg -y -loglevel repeat+info -i 'file:Behind Closed Eyes [6aOsk_m5HWg].opus' -map 0 -dn -ignore_unknown -c copy -write_id3v1 1 -metadata 'title=Behind Closed Eyes' -metadata date=20260205 -metadata 'description=Provided to YouTube by The Orchard Enterprises
+
+Behind Closed Eyes · Maddie Ashman · Madeline Ashman
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'synopsis=Provided to YouTube by The Orchard Enterprises
+
+Behind Closed Eyes · Maddie Ashman · Madeline Ashman
+
+Her Side
+
+℗ 2026 Maddie Ashman under exclusive license to AWAL Recordings Ltd
+
+Released on: 2026-02-06
+
+Producer: Maddie Ashman
+Producer, Recording Engineer: Gus White
+Mixing Engineer, Vocal Producer: Leo Abrahams
+Mastering Engineer: Kevin Tuffy
+Music Publisher: Copyright Control
+
+Auto-generated by YouTube.' -metadata 'purl=https://www.youtube.com/watch?v=6aOsk_m5HWg' -metadata 'comment=https://www.youtube.com/watch?v=6aOsk_m5HWg' -metadata 'artist=Maddie Ashman, Madeline Ashman' -metadata genre=Music -metadata 'album=Her Side' -movflags +faststart 'file:Behind Closed Eyes [6aOsk_m5HWg].temp.opus'
+[download] Finished downloading playlist: Album - Her Side
