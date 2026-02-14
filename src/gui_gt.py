@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import (
     QProgressBar, QRadioButton, QButtonGroup, QDialog
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontDatabase
 
 from workflow import DownloadWorkflow
 from logger import MultiLogger, FileLogger, JSONLogger
@@ -230,6 +230,8 @@ class YouTubeDownloadHelperQt(QMainWindow):
         self.setWindowTitle("MDAP")
         self.setGeometry(100, 100, 900, 650)
         
+        self._load_custom_font()
+        
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
@@ -238,7 +240,12 @@ class YouTubeDownloadHelperQt(QMainWindow):
         main_layout.setContentsMargins(15, 15, 15, 15)
         
         title_label = QLabel("Music Download Automation Pipeline")
-        title_label.setFont(QFont("", 14, QFont.Bold))
+        if self.font_family_black:
+            title_label.setFont(QFont(self.font_family_medium, 14, QFont.ExtraBold))
+        elif self.font_family_medium:
+            title_label.setFont(QFont(self.font_family_medium, 14))
+        else:
+            title_label.setFont(QFont("", 14, QFont.Bold))
         title_label.setStyleSheet("color: #333;")
         main_layout.addWidget(title_label)
         
@@ -358,13 +365,19 @@ class YouTubeDownloadHelperQt(QMainWindow):
         main_layout.addWidget(line)
         
         output_label = QLabel("Progress Output:")
-        output_label.setFont(QFont("", 10, QFont.Bold))
+        if self.font_family_medium:
+            output_label.setFont(QFont(self.font_family_medium, 10, QFont.ExtraBold))
+        else:
+            output_label.setFont(QFont("", 10, QFont.Bold))
         main_layout.addWidget(output_label)
         
         self.output_text = QTextEdit()
         self.output_text.setReadOnly(True)
         self.output_text.setMinimumHeight(250)
-        self.output_text.setFont(QFont("Monospace", 8))
+        if self.font_family_medium:
+            self.output_text.setFont(QFont(self.font_family_medium, 8))
+        else:
+            self.output_text.setFont(QFont("Monospace", 8))
         self.output_text.setStyleSheet("""
             QTextEdit {
                 background-color: #1e1e1e;
@@ -649,6 +662,28 @@ class YouTubeDownloadHelperQt(QMainWindow):
                 QMessageBox.warning(self, "Error", f"Could not open history: {e}")
         else:
             QMessageBox.information(self, "History", "No download history found yet.")
+    
+    def _load_custom_font(self):
+        """Load Geist Mono font from assets"""
+        base_path = Path(__file__).parent.parent / "assets" / "font" / "Geist_Mono"
+        
+        font_id_medium = QFontDatabase.addApplicationFont(str(base_path / "static" / "GeistMono-Medium.ttf"))
+        font_id_black = QFontDatabase.addApplicationFont(str(base_path / "static" / "GeistMono-Bold.ttf"))
+        
+        self.font_family_medium = None
+        self.font_family_black = None
+        
+        if font_id_medium != -1:
+            self.font_family_medium = QFontDatabase.applicationFontFamilies(font_id_medium)[0]
+            custom_font = QFont(self.font_family_medium)
+            self.setFont(custom_font)
+            logger.debug(f"Loaded custom font: {self.font_family_medium}")
+        else:
+            logger.warning(f"Failed to load medium font from: {base_path / 'static' / 'GeistMono-Medium.ttf'}")
+        
+        if font_id_black != -1:
+            self.font_family_black = QFontDatabase.applicationFontFamilies(font_id_black)[0]
+            logger.debug(f"Loaded black font: {self.font_family_black}")
     
     def closeEvent(self, event):
         """Handle application close - cleanup if needed"""
