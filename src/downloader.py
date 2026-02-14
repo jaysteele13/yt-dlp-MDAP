@@ -184,21 +184,22 @@ class YTDLPDownloader:
         return artist, album
     
     def download_with_verbose_capture(
-    self,
-    url: str,
-    output_dir: Path,
-    progress_callback: Optional[Callable[[str], None]] = None
-    ) -> Tuple[bool, Optional[Tuple[Optional[str], Optional[str]]], Optional[str]]:
+        self,
+        url: str,
+        output_dir: Path,
+        progress_callback: Optional[Callable[[str], None]] = None
+        ) -> Tuple[bool, Optional[Tuple[Optional[str], Optional[str]]], Optional[str]]:
         """
         Download audio and capture verbose output for metadata extraction.
+        
         Uses --verbose flag to extract Artist and Album from yt-dlp output
         as documented in planning/how_will_work.md
+        
         Args:
             url: YouTube URL
             output_dir: Directory to save files
-            format_type: Audio format (mp3, m4a, opus, etc.)
-            quality: Audio quality for mp3 (320, 256, 192, 128)
             progress_callback: Optional callback for progress updates
+        
         Returns:
             Tuple of (success, (artist, album) tuple, error_message)
         """
@@ -211,7 +212,10 @@ class YTDLPDownloader:
                 "-o", str(output_dir / "%(title)s.%(ext)s"),
                 url
             ]
+            
             full_output = []
+            
+            # Use context manager or proper cleanup
             process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
@@ -220,34 +224,49 @@ class YTDLPDownloader:
                 bufsize=1
             )
             
-            for line in process.stdout:
-                stripped = line.strip()
-                full_output.append(stripped)
+            try:
+                # Read output line by line
+                if process.stdout:
+                    for line in iter(process.stdout.readline, ''):
+                        if not line:  # Empty string means EOF
+                            break
+                        stripped = line.strip()
+                        if stripped:  # Only append non-empty lines
+                            full_output.append(stripped)
+                            if progress_callback:
+                                progress_callback(stripped)
                 
-                if progress_callback:
-                    progress_callback(stripped)
-
-            process.wait()
-            
-            # Check for specific error messages in the output
-            error_messages = [
-                "ERROR",
-                "WARNING",
-                "Failed to download video",
-                "Access denied",
-                "No video formats found"
-            ]
-            
-            for message in error_messages:
-                if message in full_output:
-                    return False, None, f"Download failed: {message}"
-            
-            output_text = "\n".join(full_output)
-            artist, album = self.parse_verbose_output(output_text)
-            return True, (artist, album), None
-
+                # Wait for process to complete and get return code
+                return_code = process.wait()
+                
+                # Check if download was successful
+                if return_code != 0:
+                    error_output = "\n".join(full_output[-20:])  # Last 20 lines
+                    return False, None, f"Download failed with code {return_code}: {error_output}"
+                
+                # Parse the output for metadata
+                output_text = "\n".join(full_output)
+               
+                artist, album = self.parse_verbose_output(output_text)
+                
+                return True, (artist, album), None
+                
+            finally:
+                # Ensure stdout is closed
+                if process.stdout:
+                    process.stdout.close()
+                
+                # Ensure process is terminated if still running
+                if process.poll() is None:
+                    process.terminate()
+                    try:
+                        process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait()
+        
         except Exception as e:
-            return False, None, str(e)
+            return False, None, f"Exception occurred: {str(e)}"
 
     def get_download_command(
         self,

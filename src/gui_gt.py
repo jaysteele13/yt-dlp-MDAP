@@ -336,9 +336,11 @@ class YouTubeDownloadHelperQt(QMainWindow):
         if downloading:
             self.download_btn.setText("Downloading...")
             self.status_bar.showMessage("Downloading...")
+            self.progress_bar.setMaximum(0)
         else:
             self.download_btn.setText("Download")
-            self.progress_bar.setValue(0)
+            self.progress_bar.setMaximum(100)
+            self.progress_bar.setValue(100)
     
     def cancel_download(self):
         """Cancel the current download"""
@@ -381,7 +383,6 @@ class YouTubeDownloadHelperQt(QMainWindow):
         self.append_output("")
         
         self.set_downloading(True)
-        self.progress_bar.setMaximum(0)
         
         self.download_thread = DownloadThread(self.workflow, url)
         self.download_thread.progress.connect(self.on_download_progress)
