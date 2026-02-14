@@ -1,397 +1,719 @@
 #!/usr/bin/env python3
 """
-gui_qt.py - Qt GUI frontend for YouTube music download workflow
+gui_gt.py - Qt GUI frontend for YouTube music download workflow
 
-This uses the abstracted modules:
-- core.py: Business logic
+Simplified UI that:
+- Accepts only a URL
+- Downloads to temp directory
+- Extracts metadata from verbose output
+- Prompts for confirmation
+- Moves files to final destination
+
+Uses:
+- workflow.py: DownloadWorkflow orchestration
 - logger.py: Logging backends
-- downloader.py: yt-dlp operations
 """
 
 import sys
-import subprocess
+import logging
 from pathlib import Path
+from typing import Optional
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QTextEdit, QFileDialog,
-    QMessageBox, QGroupBox, QStatusBar, QFrame, QCheckBox,
-    QProgressBar
+    QMessageBox, QGroupBox, QStatusBar, QFrame,
+    QProgressBar, QRadioButton, QButtonGroup, QDialog
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontDatabase
 
-# Import our modules
+from workflow import DownloadWorkflow
+from logger import MultiLogger, FileLogger, JSONLogger
 from core import DownloadManager
-from logger import create_logger, MultiLogger, FileLogger, JSONLogger
-from downloader import YTDLPDownloader
+from core import TEMP_BASE
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='[%(asctime)s] %(levelname)s - %(message)s',
+    datefmt='%H:%M:%S'
+)
+logger = logging.getLogger(__name__)
 
 
-class MetadataFetchThread(QThread):
-    """Thread for fetching metadata without blocking UI"""
-    finished = pyqtSignal(str, str)  # artist, album
+class DownloadThread(QThread):
+    """Thread for running download workflow without blocking UI"""
+    
+    progress = pyqtSignal(str)
+    finished = pyqtSignal(bool, str, str, str, int)
     error = pyqtSignal(str)
     
-    def __init__(self, url: str):
+    def __init__(self, workflow: DownloadWorkflow, url: str):
         super().__init__()
+        self.workflow = workflow
         self.url = url
     
     def run(self):
         try:
-            downloader = YTDLPDownloader()
-            artist, album = downloader.suggest_artist_album(self.url)
-            if artist or album:
-                self.finished.emit(artist or "", album or "")
-            else:
-                self.error.emit("Could not extract artist/album from video")
+            logger.info(f"Starting download thread for: {self.url}")
+            
+            def progress_callback(line: str):
+                self.progress.emit(line)
+            
+            success, temp_dir, error = self.workflow.download(self.url, progress_callback)
+            
+            if not success:
+                logger.error(f"Download failed: {error}")
+                self.error.emit(error)
+                return
+            
+            artist, album = self.workflow.get_extracted_metadata()
+            files = self.workflow.get_downloaded_files()
+            file_count = len(files)
+            
+            logger.info(f"Download complete. Artist: {artist}, Album: {album}, Files: {file_count}")
+            self.finished.emit(True, artist or "", album or "", str(temp_dir), file_count)
+            
         except Exception as e:
+            logger.exception(f"Download thread error: {e}")
             self.error.emit(str(e))
+
+
+class EditArtistAlbumDialog(QDialog):
+    """Dialog for editing artist/album values"""
+    
+    def __init__(self, parent, artist: str, album: str, is_album: bool):
+        super().__init__(parent)
+        self.is_album = is_album
+        self.setWindowTitle("Edit Album / Artist")
+        self.setMinimumWidth(400)
+        self.setModal(True)
+        
+        layout = QVBoxLayout()
+        
+        artist_label = QLabel("Artist:")
+        self.artist_input = QLineEdit(artist)
+        self.artist_input.setPlaceholderText(artist or "Enter artist name")
+        layout.addWidget(artist_label)
+        layout.addWidget(self.artist_input)
+        
+        if is_album:
+            album_label = QLabel("Album:")
+            self.album_input = QLineEdit(album)
+            self.album_input.setPlaceholderText(album or "Enter album name")
+            layout.addWidget(album_label)
+            layout.addWidget(self.album_input)
+        else:
+            self.album_input = None
+        
+        button_layout = QHBoxLayout()
+        ok_btn = QPushButton("Save")
+        cancel_btn = QPushButton("Cancel")
+        ok_btn.clicked.connect(self.accept)
+        cancel_btn.clicked.connect(self.reject)
+        button_layout.addWidget(ok_btn)
+        button_layout.addWidget(cancel_btn)
+        layout.addLayout(button_layout)
+        
+        self.setLayout(layout)
+    
+    def get_values(self) -> tuple:
+        artist = self.artist_input.text().strip()
+        album = self.album_input.text().strip() if self.album_input else ""
+        return artist, album
+
+
+class ConfirmDialog(QDialog):
+    """Custom dialog for confirming artist/album after download"""
+    
+    def __init__(self, parent, artist: str, album: str, file_count: int, is_album: bool):
+        super().__init__(parent)
+        self.is_album = is_album
+        self.auto_artist = artist or ""
+        self.auto_album = album or ""
+        self.file_count = file_count
+        self.setWindowTitle("Confirm Details")
+        self.setMinimumWidth(450)
+        
+        layout = QVBoxLayout()
+        
+        title_label = QLabel("<b>Download Complete!</b>")
+        title_label.setStyleSheet("font-size: 14px;")
+        layout.addWidget(title_label)
+        
+        download_type = "Album" if is_album else "Song"
+        type_label = QLabel(f"Type: {download_type}")
+        layout.addWidget(type_label)
+        
+        files_label = QLabel(f"Files downloaded: {file_count}")
+        layout.addWidget(files_label)
+        
+        layout.addSpacing(10)
+        
+        artist = self.auto_artist or "Unknown"
+        self.artist_display = QLabel(f"<b>Artist:</b> {artist}")
+        layout.addWidget(self.artist_display)
+        
+        if is_album:
+            album_text = self.auto_album or "Unknown"
+            self.album_display = QLabel(f"<b>Album:</b> {album_text}")
+            layout.addWidget(self.album_display)
+        else:
+            self.album_display = None
+        
+        self.edit_btn = QPushButton("Edit Album / Artist")
+        self.edit_btn.clicked.connect(self._show_edit_dialog)
+        layout.addWidget(self.edit_btn)
+        
+        layout.addSpacing(20)
+        
+        button_layout = QHBoxLayout()
+        self.confirm_btn = QPushButton("Confirm & Move")
+        self.confirm_btn.setDefault(True)
+        self.cancel_btn = QPushButton("Cancel")
+        self.confirm_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
+        button_layout.addWidget(self.confirm_btn)
+        button_layout.addWidget(self.cancel_btn)
+        layout.addLayout(button_layout)
+        
+        self.setLayout(layout)
+    
+    def _show_edit_dialog(self):
+        dialog = EditArtistAlbumDialog(self, self.auto_artist, self.auto_album, self.is_album)
+        if dialog.exec_() == QDialog.Accepted:
+            self.auto_artist, self.auto_album = dialog.get_values()
+            
+            artist = self.auto_artist or "Unknown"
+            self.artist_display.setText(f"<b>Artist:</b> {artist}")
+            
+            if self.is_album and self.album_display:
+                album_text = self.auto_album or "Unknown"
+                self.album_display.setText(f"<b>Album:</b> {album_text}")
+    
+    def get_values(self) -> tuple:
+        return self.auto_artist, self.auto_album
 
 
 class YouTubeDownloadHelperQt(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        # Initialize core components
-        self.manager = DownloadManager()
+        logger.info("Initializing GUI")
         
-        # Setup logger - using both file and JSON by default
-        self.logger = MultiLogger([
+        self.workflow: Optional[DownloadWorkflow] = None
+        self.download_thread: Optional[DownloadThread] = None
+        self.is_album_type = True
+        self.default_output_dir = Path.home() / "Music" / "artists"
+        
+        self.init_workflow()
+        self.init_ui()
+        
+        logger.info("GUI initialized successfully")
+    
+    def init_workflow(self):
+        """Initialize the download workflow with logging"""
+        backend_logger = MultiLogger([
             FileLogger(),
             JSONLogger()
         ])
         
-        # Optional: Check if yt-dlp is available
-        try:
-            self.downloader = YTDLPDownloader()
-            self.ytdlp_available = True
-        except RuntimeError:
-            self.downloader = None
-            self.ytdlp_available = False
+        self.workflow = DownloadWorkflow(
+            base_output_dir=self.default_output_dir,
+            logger_instance=backend_logger
+        )
         
-        self.metadata_thread = None
-        
-        self.init_ui()
-        
+        logger.debug(f"Workflow created with output dir: {self.default_output_dir}")
+    
     def init_ui(self):
         """Initialize the user interface"""
-        self.setWindowTitle("YouTube Music Download Helper")
-        self.setGeometry(100, 100, 900, 700)
+        self.setWindowTitle("MDAP")
+        self.setGeometry(100, 100, 900, 650)
         
-        # Central widget
+        self._load_custom_font()
+        
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
-        # Main layout
         main_layout = QVBoxLayout()
         main_layout.setSpacing(10)
         main_layout.setContentsMargins(15, 15, 15, 15)
         
-        # Input section
-        input_group = QGroupBox("Download Information")
+        title_label = QLabel("Music Download Automation Pipeline")
+        if self.font_family_black:
+            title_label.setFont(QFont(self.font_family_medium, 14, QFont.ExtraBold))
+        elif self.font_family_medium:
+            title_label.setFont(QFont(self.font_family_medium, 14))
+        else:
+            title_label.setFont(QFont("", 14, QFont.Bold))
+        title_label.setStyleSheet("color: #333;")
+        main_layout.addWidget(title_label)
+        
+        input_group = QGroupBox("Download")
         input_layout = QVBoxLayout()
         
-        # YouTube Link with auto-extract button
         link_layout = QHBoxLayout()
-        link_label = QLabel("YouTube Link:")
-        link_label.setFixedWidth(120)
+        link_label = QLabel("YouTube URL:")
+        link_label.setFixedWidth(100)
         self.link_entry = QLineEdit()
-        self.link_entry.setPlaceholderText("https://youtube.com/...")
-        self.link_entry.returnPressed.connect(self.on_link_entered)
-        
-        self.extract_btn = QPushButton("Auto-Extract Info")
-        self.extract_btn.setFixedWidth(130)
-        self.extract_btn.setEnabled(self.ytdlp_available)
-        self.extract_btn.clicked.connect(self.extract_metadata)
-        
+        self.link_entry.setPlaceholderText("https://youtube.com/watch?v=... or https://youtu.be/...")
+        self.link_entry.returnPressed.connect(self.start_download)
         link_layout.addWidget(link_label)
-        link_layout.addWidget(self.link_entry)
-        link_layout.addWidget(self.extract_btn)
+        link_layout.addWidget(self.link_entry, 1)
         input_layout.addLayout(link_layout)
         
-        # Artist
-        artist_layout = QHBoxLayout()
-        artist_label = QLabel("Artist:")
-        artist_label.setFixedWidth(120)
-        self.artist_entry = QLineEdit()
-        self.artist_entry.setText(self.manager.config.get('last_artist', ''))
-        self.artist_entry.setPlaceholderText("Artist name")
-        self.artist_entry.returnPressed.connect(lambda: self.album_entry.setFocus())
-        artist_layout.addWidget(artist_label)
-        artist_layout.addWidget(self.artist_entry)
-        input_layout.addLayout(artist_layout)
+        type_layout = QHBoxLayout()
+        type_label = QLabel("Download Type:")
+        type_label.setFixedWidth(100)
         
-        # Album
-        album_layout = QHBoxLayout()
-        album_label = QLabel("Album:")
-        album_label.setFixedWidth(120)
-        self.album_entry = QLineEdit()
-        self.album_entry.setText(self.manager.config.get('last_album', ''))
-        self.album_entry.setPlaceholderText("Album name")
-        self.album_entry.returnPressed.connect(self.create_and_log)
-        album_layout.addWidget(album_label)
-        album_layout.addWidget(self.album_entry)
-        input_layout.addLayout(album_layout)
+        self.type_group = QButtonGroup(self)
         
-        # Base Directory
-        dir_layout = QHBoxLayout()
-        dir_label = QLabel("Base Directory:")
-        dir_label.setFixedWidth(120)
-        self.dir_entry = QLineEdit()
-        self.dir_entry.setText(self.manager.config['base_directory'])
-        self.dir_entry.setPlaceholderText("Download directory")
-        browse_btn = QPushButton("Browse")
-        browse_btn.setFixedWidth(100)
-        browse_btn.clicked.connect(self.browse_directory)
-        dir_layout.addWidget(dir_label)
-        dir_layout.addWidget(self.dir_entry)
-        dir_layout.addWidget(browse_btn)
-        input_layout.addLayout(dir_layout)
+        self.album_radio = QRadioButton("Album / Playlist")
+        self.album_radio.setChecked(True)
+        self.song_radio = QRadioButton("Single Song")
+        
+        self.type_group.addButton(self.album_radio)
+        self.type_group.addButton(self.song_radio)
+        
+        self.album_radio.toggled.connect(lambda: self._set_album_type(True))
+        self.song_radio.toggled.connect(lambda: self._set_album_type(False))
+        
+        type_layout.addWidget(type_label)
+        type_layout.addWidget(self.album_radio)
+        type_layout.addWidget(self.song_radio)
+        type_layout.addStretch()
+        
+        input_layout.addLayout(type_layout)
         
         input_group.setLayout(input_layout)
         main_layout.addWidget(input_group)
         
-        # Buttons
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(10)
         
-        self.create_btn = QPushButton("Create Directory && Log")
-        self.create_btn.setMinimumHeight(40)
-        self.create_btn.setStyleSheet("""
+        self.download_btn = QPushButton("Download")
+        self.download_btn.setMinimumHeight(45)
+        self.download_btn.setStyleSheet("""
             QPushButton {
-                background-color: #4CAF50;
+                background-color: #548478;
                 color: white;
                 font-weight: bold;
-                border: none;
-                border-radius: 4px;
+                font-size: 14px;
+                border: 1px solid #242424;
             }
             QPushButton:hover {
-                background-color: #45a049;
+                background-color: #3f645b;
             }
             QPushButton:pressed {
-                background-color: #3d8b40;
+                background-color: #242424;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
             }
         """)
-        self.create_btn.clicked.connect(self.create_and_log)
+        self.download_btn.clicked.connect(self.start_download)
         
-        open_dir_btn = QPushButton("Open Directory")
-        open_dir_btn.setMinimumHeight(40)
-        open_dir_btn.clicked.connect(self.open_directory)
+        self.cancel_btn = QPushButton("Cancel Download")
+        self.cancel_btn.setMinimumHeight(45)
+        self.cancel_btn.setEnabled(False)
+        self.cancel_btn.setVisible(False)
+        self.cancel_btn.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: #242424;
+                font-weight: bold;
+                font-size: 14px;
+                border: 1px solid #242424;
+            }
+            QPushButton:hover {
+                background-color: #9785c9;
+                color: #fff
+            }
+            QPushButton:pressed {
+                background-color: #573d9e;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
+            }
+        """)
+        self.cancel_btn.clicked.connect(self.cancel_download)
         
-        clear_btn = QPushButton("Clear Form")
-        clear_btn.setMinimumHeight(40)
-        clear_btn.clicked.connect(self.clear_form)
-        
-        button_layout.addWidget(self.create_btn, 2)
-        button_layout.addWidget(open_dir_btn, 1)
-        button_layout.addWidget(clear_btn, 1)
-        
+        button_layout.addWidget(self.download_btn, 2)
+        button_layout.addWidget(self.cancel_btn, 1)
         main_layout.addLayout(button_layout)
         
-        # Separator
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setMaximumHeight(6)
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: none;
+                background-color: #e0e0e0;
+                border: 1px solid #242424
+            }
+            QProgressBar::chunk {
+                background-color: #9785c9;
+                border: 1px solid #242424
+            }
+        """)
+        main_layout.addWidget(self.progress_bar)
+        
         line = QFrame()
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         main_layout.addWidget(line)
         
-        # Output section
-        output_label = QLabel("Output:")
-        output_label.setFont(QFont("", 10, QFont.Bold))
+        output_label = QLabel("Progress Output:")
+        if self.font_family_medium:
+            output_label.setFont(QFont(self.font_family_medium, 10, QFont.ExtraBold))
+        else:
+            output_label.setFont(QFont("", 10, QFont.Bold))
         main_layout.addWidget(output_label)
         
         self.output_text = QTextEdit()
         self.output_text.setReadOnly(True)
-        self.output_text.setMinimumHeight(200)
-        self.output_text.setFont(QFont("Monospace", 9))
+        self.output_text.setMinimumHeight(250)
+        if self.font_family_medium:
+            self.output_text.setFont(QFont(self.font_family_medium, 8))
+        else:
+            self.output_text.setFont(QFont("Monospace", 8))
+        self.output_text.setStyleSheet("""
+            QTextEdit {
+                background-color: #1e1e1e;
+                color: #d4d4d4;
+                border: 1px solid #3c3c3c;
+               
+            }
+        """)
         main_layout.addWidget(self.output_text)
         
-        # History button
-        history_btn = QPushButton("View Download History")
-        history_btn.clicked.connect(self.view_history)
-        main_layout.addWidget(history_btn)
+        output_layout = QHBoxLayout()
+        
+        self.output_dir_input = QLineEdit()
+        self.output_dir_input.setPlaceholderText(str(self.default_output_dir))
+        self.output_dir_input.textChanged.connect(self._on_output_dir_changed)
+        
+        self.update_dir_btn = QPushButton("Update Output Folder")
+        self.update_dir_btn.setVisible(False)
+        self.update_dir_btn.clicked.connect(self._update_output_folder)
+        
+        self.clear_btn = QPushButton("Clear Output")
+        self.clear_btn.clicked.connect(self.clear_output)
+        
+        output_layout.addWidget(self.output_dir_input)
+        output_layout.addWidget(self.update_dir_btn)
+        output_layout.addWidget(self.clear_btn)
+        
+        main_layout.addLayout(output_layout)
         
         central_widget.setLayout(main_layout)
         
-        # Status bar
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         
-        if self.ytdlp_available:
-            self.status_bar.showMessage("Ready - yt-dlp detected")
-        else:
-            self.status_bar.showMessage("Ready - yt-dlp not found (metadata extraction disabled)")
+        self.status_bar.showMessage("Ready - Enter a YouTube URL to download")
         
-        # Set focus to link entry
         self.link_entry.setFocus()
     
-    def on_link_entered(self):
-        """Handle when user presses Enter in link field"""
-        if self.ytdlp_available:
-            self.extract_metadata()
-        else:
-            self.artist_entry.setFocus()
+    def _set_album_type(self, is_album: bool):
+        """Set download type"""
+        self.is_album_type = is_album
+        logger.debug(f"Download type set to: {'Album' if is_album else 'Song'}")
     
-    def extract_metadata(self):
-        """Extract artist and album from YouTube URL"""
+    def append_output(self, text: str):
+        """Append text to output area"""
+        self.output_text.append(text)
+    
+    def set_downloading(self, downloading: bool):
+        """Enable/disable download controls during download"""
+        self.download_btn.setEnabled(not downloading)
+        self.cancel_btn.setEnabled(downloading)
+        self.cancel_btn.setVisible(downloading)
+        self.link_entry.setEnabled(not downloading)
+        self.album_radio.setEnabled(not downloading)
+        self.song_radio.setEnabled(not downloading)
+        
+        if downloading:
+            self.download_btn.setText("Downloading...")
+            self.status_bar.showMessage("Downloading...")
+            self.progress_bar.setMaximum(0)
+        else:
+            self.download_btn.setText("Download")
+            self.status_bar.showMessage("Download")
+            self.progress_bar.setMaximum(100)
+            self.progress_bar.setValue(100)
+    
+    def cancel_download(self):
+        """Cancel the current download"""
+        logger.info("Cancel requested by user")
+        
+        if self.download_thread and self.download_thread.isRunning():
+            self.append_output("")
+            self.append_output("<span style='color: #FF9800;'>! Cancelling download...</span>")
+            
+            self.download_thread.terminate()
+            self.download_thread.wait()
+            
+            if self.workflow:
+                self.workflow.cancel()
+            
+            self.set_downloading(False)
+            self.append_output("<span style='color: #FF9800;'>! Download cancelled</span>")
+            self.status_bar.showMessage("Download cancelled")
+            
+            self.link_entry.clear()
+            self.link_entry.setFocus()
+    
+    def start_download(self):
+        """Start the download process"""
         url = self.link_entry.text().strip()
         
         if not url:
-            QMessageBox.warning(self, "Error", "Please enter a YouTube link first")
+            QMessageBox.warning(self, "Error", "Please enter a YouTube URL")
             return
         
-        if not self.manager.validate_youtube_url(url):
-            QMessageBox.warning(self, "Error", "Invalid YouTube URL")
-            return
-        
-        # Disable button during extraction
-        self.extract_btn.setEnabled(False)
-        self.extract_btn.setText("Extracting...")
-        self.status_bar.showMessage("Fetching metadata from YouTube...")
-        
-        # Start thread
-        self.metadata_thread = MetadataFetchThread(url)
-        self.metadata_thread.finished.connect(self.on_metadata_extracted)
-        self.metadata_thread.error.connect(self.on_metadata_error)
-        self.metadata_thread.start()
-    
-    def on_metadata_extracted(self, artist: str, album: str):
-        """Handle successful metadata extraction"""
-        if artist:
-            self.artist_entry.setText(artist)
-        if album:
-            self.album_entry.setText(album)
-        
-        self.output_text.append(f"✓ Auto-extracted: {artist} - {album}\n")
-        self.status_bar.showMessage("Metadata extracted successfully")
-        
-        # Re-enable button
-        self.extract_btn.setEnabled(True)
-        self.extract_btn.setText("Auto-Extract Info")
-        
-        # Focus on first empty field or album field
-        if not artist:
-            self.artist_entry.setFocus()
-        elif not album:
-            self.album_entry.setFocus()
-        else:
-            self.create_btn.setFocus()
-    
-    def on_metadata_error(self, error: str):
-        """Handle metadata extraction error"""
-        self.output_text.append(f"⚠ Could not auto-extract: {error}\n")
-        self.status_bar.showMessage("Metadata extraction failed")
-        
-        # Re-enable button
-        self.extract_btn.setEnabled(True)
-        self.extract_btn.setText("Auto-Extract Info")
-        
-        # Focus on artist field for manual entry
-        self.artist_entry.setFocus()
-    
-    def browse_directory(self):
-        """Browse for base directory"""
-        directory = QFileDialog.getExistingDirectory(
-            self,
-            "Select Base Directory",
-            self.dir_entry.text()
-        )
-        if directory:
-            self.dir_entry.setText(directory)
-    
-    def create_and_log(self):
-        """Create directory and log the download using core modules"""
-        link = self.link_entry.text().strip()
-        artist = self.artist_entry.text().strip()
-        album = self.album_entry.text().strip()
-        base_dir = self.dir_entry.text().strip()
-        
-        # Use core.py to process
-        success, entry, error = self.manager.process_download(link, artist, album, base_dir)
-        
-        if not success:
+        valid, error = self.workflow.validate_url(url)
+        if not valid:
             QMessageBox.warning(self, "Error", error)
             return
         
-        # Log using logger.py
-        log_success = self.logger.log(entry)
+        logger.info(f"Starting download for URL: {url}")
         
-        # Update output
-        self.output_text.append(f"✓ Directory created: {entry['directory']}")
-        if log_success:
-            self.output_text.append(f"✓ Logged to file and JSON")
-        else:
-            self.output_text.append(f"⚠ Logging failed")
+        self.append_output(f"<span style='color: #4CAF50;'>>> Starting download...</span>")
+        self.append_output(f"<span style='color: #888;'>URL: {url}</span>")
+        self.append_output("")
         
-        self.output_text.append(f"\nyt-dlp command:")
-        self.output_text.append(entry['ytdlp_command'])
-        self.output_text.append(f"\n{'='*60}\n")
+        self.set_downloading(True)
         
-        # Update status
-        self.status_bar.showMessage(f"Created: {entry['directory_name']}")
-        
-        # Copy command to clipboard
-        clipboard = QApplication.clipboard()
-        clipboard.setText(entry['ytdlp_command'])
-        
-        # Success message
-        QMessageBox.information(
-            self,
-            "Success",
-            f"Directory created successfully!\n\n"
-            f"Path: {entry['directory']}\n\n"
-            f"yt-dlp command copied to clipboard!\n"
-            f"Paste it in your terminal to download."
-        )
-        
-        # Clear link for next entry
-        self.link_entry.clear()
-        self.link_entry.setFocus()
+        self.download_thread = DownloadThread(self.workflow, url)
+        self.download_thread.progress.connect(self.on_download_progress)
+        self.download_thread.finished.connect(self.on_download_finished)
+        self.download_thread.error.connect(self.on_download_error)
+        self.download_thread.start()
     
-    def open_directory(self):
-        """Open the created directory in file manager"""
-        base_dir = self.dir_entry.text().strip()
-        artist = self.artist_entry.text().strip()
-        album = self.album_entry.text().strip()
+    def on_download_progress(self, line: str):
+        """Handle download progress output"""
+        if "[download]" in line or "[metadata]" in line:
+            self.append_output(f"<span style='color: #888;'>{line}</span>")
+    
+    def on_download_finished(self, success: bool, artist: str, album: str, temp_dir: str, file_count: int):
+        """Handle download completion"""
+        self.set_downloading(False)
         
-        if not artist or not album:
-            # Just open base directory
-            if Path(base_dir).exists():
-                subprocess.Popen(['xdg-open', base_dir])
-            else:
-                QMessageBox.warning(self, "Error", "Base directory doesn't exist")
+        if not success:
             return
         
-        dir_name = self.manager.create_directory_name(artist, album)
-        full_path = Path(base_dir) / dir_name
+        self.append_output("")
+        self.append_output(f"<span style='color: #4CAF50;'>✓ Download complete! ({file_count} files)</span>")
         
-        if full_path.exists():
-            subprocess.Popen(['xdg-open', str(full_path)])
+        self.append_output("")
+        self.append_output(f"<span style='color: #569CD6;'>--- Confirm Details ---</span>")
+        
+        dialog = ConfirmDialog(self, artist, album, file_count, self.is_album_type)
+        
+        if dialog.exec_() == QDialog.Accepted:
+            confirmed_artist, confirmed_album = dialog.get_values()
+            
+            if not confirmed_artist:
+                QMessageBox.warning(self, "Error", "Artist name is required")
+                self.status_bar.showMessage("Artist name required")
+                return
+            
+            if self.is_album_type and not confirmed_album:
+                QMessageBox.warning(self, "Error", "Album name is required")
+                self.status_bar.showMessage("Album name required")
+                return
+            
+            self.confirm_and_move(confirmed_artist, confirmed_album)
         else:
-            QMessageBox.warning(self, "Error", "Directory doesn't exist yet. Create it first!")
+            self.append_output("<span style='color: #CE9178;'>Download cancelled by user</span>")
+            self.workflow.cancel()
+            self.status_bar.showMessage("Cancelled")
+            
+            self.link_entry.clear()
+            self.link_entry.setFocus()
     
-    def clear_form(self):
-        """Clear all input fields"""
+    def confirm_and_move(self, artist: str, album: str):
+        """Confirm and move files to final destination"""
+        logger.info(f"Confirming move - Artist: {artist}, Album: {album}")
+        
+        self.append_output(f"<span style='color: #569CD6;'>Moving to: {artist} - {album}</span>")
+        self.status_bar.showMessage("Moving files...")
+        
+        success, dest, error = self.workflow.confirm_and_move(
+            artist=artist,
+            album=album,
+            is_album_type=self.is_album_type
+        )
+        
+        if success:
+            self.append_output(f"<span style='color: #4CAF50;'>✓ Files moved successfully!</span>")
+            self.append_output(f"<span style='color: #888;'>Location: {dest}</span>")
+            self.append_output("")
+            self.append_output(f"<span style='color: #4CAF50;'>{'='*50}</span>")
+            self.append_output("")
+            
+            self.status_bar.showMessage(f"Saved to: {dest}")
+            
+            reply = QMessageBox.question(
+                self,
+                "Download Complete",
+                f"Download complete!\n\nSaved to:\n{dest}\n\nOpen folder?",
+                QMessageBox.Yes | QMessageBox.No
+            )
+            
+            if reply == QMessageBox.Yes:
+                try:
+                    import subprocess
+                    subprocess.Popen(['xdg-open', str(dest)])
+                except Exception as e:
+                    logger.error(f"Failed to open directory: {e}")
+        else:
+            self.append_output(f"<span style='color: #F44747;'>✗ Failed to move files: {error}</span>")
+            self.status_bar.showMessage(f"Error: {error}")
+            QMessageBox.warning(self, "Error", f"Failed to move files: {error}")
+        
         self.link_entry.clear()
         self.link_entry.setFocus()
     
+    def on_download_error(self, error: str):
+        """Handle download error"""
+        self.set_downloading(False)
+        
+        self.append_output("")
+        self.append_output(f"<span style='color: #F44747;'>✗ Error: {error}</span>")
+        self.append_output("")
+        
+        self.status_bar.showMessage(f"Error: {error}")
+        
+        QMessageBox.critical(self, "Download Error", error)
+        
+        self.link_entry.setFocus()
+    
+    def _on_output_dir_changed(self, text: str):
+        """Show/hide update button based on whether path changed from default"""
+        input_path = text.strip()
+        default_path_str = str(self.default_output_dir)
+        
+        if input_path and input_path != default_path_str:
+            self.update_dir_btn.setVisible(True)
+        else:
+            self.update_dir_btn.setVisible(False)
+    
+    def _update_output_folder(self):
+        """Update the output folder"""
+        new_path = self.output_dir_input.text().strip()
+        
+        if not new_path:
+            QMessageBox.warning(self, "Error", "Please enter a valid output path")
+            return
+        
+        new_dir = Path(new_path)
+        
+        try:
+            new_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Could not create directory: {e}")
+            return
+        
+        self.default_output_dir = new_dir
+        self.output_dir_input.setPlaceholderText(str(new_dir))
+        self.output_dir_input.clear()
+        self.update_dir_btn.setVisible(False)
+        
+        self.workflow.base_output_dir = new_dir
+        logger.info(f"Output folder updated to: {new_dir}")
+        self.status_bar.showMessage(f"Output folder set to: {new_dir}")
+        
+        QMessageBox.information(self, "Success", f"Output folder updated to:\n{new_dir}")
+    
+    def open_output_folder(self):
+        """Open the output folder in file manager"""
+        output_dir = self.default_output_dir
+        
+        if output_dir.exists():
+            try:
+                import subprocess
+                subprocess.Popen(['xdg-open', str(output_dir)])
+                logger.debug(f"Opened output folder: {output_dir}")
+            except Exception as e:
+                logger.error(f"Failed to open folder: {e}")
+                QMessageBox.warning(self, "Error", f"Could not open folder: {e}")
+        else:
+            QMessageBox.information(self, "Info", "Output folder doesn't exist yet. Complete a download first.")
+    
+    def clear_output(self):
+        """Clear the output text area"""
+        self.output_text.clear()
+    
     def view_history(self):
-        """View download history"""
-        # Try JSON log first (structured), fall back to text
+        """View download history from log files"""
+        logger.info("Opening download history")
+        
         json_log = Path.home() / "youtube_downloads_log.json"
-        text_log = Path.home() / "youtube_downloads_log.txt"
         
         if json_log.exists():
-            subprocess.Popen(['xdg-open', str(json_log)])
-        elif text_log.exists():
-            subprocess.Popen(['xdg-open', str(text_log)])
+            try:
+                import subprocess
+                subprocess.Popen(['xdg-open', str(json_log)])
+            except Exception as e:
+                logger.error(f"Failed to open history file: {e}")
+                QMessageBox.warning(self, "Error", f"Could not open history: {e}")
         else:
-            QMessageBox.information(self, "History", "No download history yet.")
+            QMessageBox.information(self, "History", "No download history found yet.")
+    
+    def _load_custom_font(self):
+        """Load Geist Mono font from assets"""
+        base_path = Path(__file__).parent.parent / "assets" / "font" / "Geist_Mono"
+        
+        font_id_medium = QFontDatabase.addApplicationFont(str(base_path / "static" / "GeistMono-Medium.ttf"))
+        font_id_black = QFontDatabase.addApplicationFont(str(base_path / "static" / "GeistMono-Bold.ttf"))
+        
+        self.font_family_medium = None
+        self.font_family_black = None
+        
+        if font_id_medium != -1:
+            self.font_family_medium = QFontDatabase.applicationFontFamilies(font_id_medium)[0]
+            custom_font = QFont(self.font_family_medium)
+            self.setFont(custom_font)
+            logger.debug(f"Loaded custom font: {self.font_family_medium}")
+        else:
+            logger.warning(f"Failed to load medium font from: {base_path / 'static' / 'GeistMono-Medium.ttf'}")
+        
+        if font_id_black != -1:
+            self.font_family_black = QFontDatabase.applicationFontFamilies(font_id_black)[0]
+            logger.debug(f"Loaded black font: {self.font_family_black}")
+    
+    def closeEvent(self, event):
+        """Handle application close - cleanup if needed"""
+        logger.info("Application closing")
+        
+        temp_dir = TEMP_BASE
+        if temp_dir.exists():
+            subdirs = [d for d in temp_dir.iterdir() if d.is_dir()]
+            if subdirs:
+                logger.warning(f"Found {len(subdirs)} temp directories on close")
+                reply = QMessageBox.question(
+                    self,
+                    "Cleanup",
+                    f"Found {len(subdirs)} temporary download directories.\nClean them up?",
+                    QMessageBox.Yes | QMessageBox.No
+                )
+                if reply == QMessageBox.Yes:
+                    import shutil
+                    for d in subdirs:
+                        try:
+                            shutil.rmtree(d)
+                            logger.info(f"Cleaned up: {d}")
+                        except Exception as e:
+                            logger.error(f"Failed to cleanup {d}: {e}")
+        
+        event.accept()
 
 
 def main():
     app = QApplication(sys.argv)
-    
-    # Set application style
     app.setStyle('Fusion')
     
     window = YouTubeDownloadHelperQt()
