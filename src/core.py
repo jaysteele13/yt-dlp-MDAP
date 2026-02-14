@@ -104,13 +104,17 @@ def move_files_to_destination(
             logger.warning(f"No audio files found in {src}")
             return False, None, "No audio files found in source directory"
         
+        files_in_src = [f for f in src.iterdir() if f.is_file()]
+        if not files_in_src:
+            logger.warning(f"No files found in {src}")
+            return False, None, "No files found in source directory"
+        
         moved_count = 0
-        for file in src.iterdir():
-            if file.is_file():
-                dest_file = dest / file.name
-                shutil.move(str(file), str(dest_file))
-                moved_count += 1
-                logger.debug(f"Moved: {file.name} -> {dest}")
+        for file in files_in_src:
+            dest_file = dest / file.name
+            shutil.move(str(file), str(dest_file))
+            moved_count += 1
+            logger.debug(f"Moved: {file.name} -> {dest}")
         
         logger.info(f"Moved {moved_count} files to {dest}")
         return True, dest, None
