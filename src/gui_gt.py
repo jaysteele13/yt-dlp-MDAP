@@ -310,6 +310,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
         self.cancel_btn = QPushButton("Cancel Download")
         self.cancel_btn.setMinimumHeight(45)
         self.cancel_btn.setEnabled(False)
+        self.cancel_btn.setVisible(False)
         self.cancel_btn.setStyleSheet("""
             QPushButton {
                 background-color: #F44336;
@@ -416,6 +417,7 @@ class YouTubeDownloadHelperQt(QMainWindow):
         """Enable/disable download controls during download"""
         self.download_btn.setEnabled(not downloading)
         self.cancel_btn.setEnabled(downloading)
+        self.cancel_btn.setVisible(downloading)
         self.link_entry.setEnabled(not downloading)
         self.album_radio.setEnabled(not downloading)
         self.song_radio.setEnabled(not downloading)
