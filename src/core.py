@@ -9,9 +9,159 @@ This module handles:
 """
 
 import json
+import shutil
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
+import logging
+
+TEMP_BASE = Path.home() / "Music" / "temp"
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='[%(asctime)s] %(levelname)s - %(message)s',
+    datefmt='%H:%M:%S'
+)
+logger = logging.getLogger(__name__)
+
+
+def get_timestamp() -> str:
+    """
+    Get current timestamp as string for directory naming.
+    
+    Returns:
+        Timestamp string in format YYYYMMDD_HHMMSS
+    """
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+def create_timestamp_dir() -> Tuple[bool, Path, Optional[str]]:
+    """
+    Create a timestamped temporary directory under Music/temp.
+    
+    Returns:
+        Tuple of (success, directory_path, error_message)
+    """
+    try:
+        TEMP_BASE.mkdir(parents=True, exist_ok=True)
+        ts = get_timestamp()
+        ts_dir = TEMP_BASE / ts
+        ts_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Created timestamp directory: {ts_dir}")
+        return True, ts_dir, None
+    except Exception as e:
+        logger.error(f"Failed to create timestamp directory: {e}")
+        return False, None, str(e)
+
+
+def get_files_in_directory(directory: Path) -> List[Path]:
+    """
+    Get all audio files in a directory.
+    
+    Args:
+        directory: Path to directory
+        
+    Returns:
+        List of audio file paths
+    """
+    audio_extensions = {'.mp3', '.m4a', '.flac', '.ogg', '.opus', '.wav', '.aac'}
+    try:
+        files = [f for f in directory.iterdir() if f.suffix.lower() in audio_extensions]
+        logger.debug(f"Found {len(files)} audio files in {directory}")
+        return files
+    except Exception as e:
+        logger.error(f"Failed to list files in {directory}: {e}")
+        return []
+
+
+def move_files_to_destination(
+    src: Path,
+    artist: str,
+    album: str,
+    base_dir: Path
+) -> Tuple[bool, Path, Optional[str]]:
+    """
+    Move files from source to destination directory (Artist/Album structure).
+    
+    Args:
+        src: Source directory (temp timestamp dir)
+        artist: Artist name
+        album: Album name
+        base_dir: Base output directory
+        
+    Returns:
+        Tuple of (success, destination_path, error_message)
+    """
+    try:
+        artist_safe = DownloadManager.sanitize_filename(artist)
+        album_safe = DownloadManager.sanitize_filename(album)
+        
+        dest = base_dir / artist_safe / album_safe
+        dest.mkdir(parents=True, exist_ok=True)
+        
+        files = get_files_in_directory(src)
+        if not files:
+            logger.warning(f"No audio files found in {src}")
+            return False, None, "No audio files found in source directory"
+        
+        moved_count = 0
+        for file in src.iterdir():
+            if file.is_file():
+                dest_file = dest / file.name
+                shutil.move(str(file), str(dest_file))
+                moved_count += 1
+                logger.debug(f"Moved: {file.name} -> {dest}")
+        
+        logger.info(f"Moved {moved_count} files to {dest}")
+        return True, dest, None
+        
+    except Exception as e:
+        logger.error(f"Failed to move files to destination: {e}")
+        return False, None, str(e)
+
+
+def cleanup_timestamp_dir(ts_dir: Path) -> Tuple[bool, Optional[str]]:
+    """
+    Remove the timestamp directory after successful move.
+    
+    Args:
+        ts_dir: Timestamp directory to remove
+        
+    Returns:
+        Tuple of (success, error_message)
+    """
+    try:
+        if not ts_dir.exists():
+            logger.warning(f"Timestamp directory does not exist: {ts_dir}")
+            return True, None
+        
+        shutil.rmtree(ts_dir)
+        logger.info(f"Cleaned up timestamp directory: {ts_dir}")
+        return True, None
+    except Exception as e:
+        logger.error(f"Failed to cleanup timestamp directory: {e}")
+        return False, str(e)
+
+
+def validate_directory_exists(directory: Path) -> Tuple[bool, Optional[str]]:
+    """
+    Validate that a directory exists.
+    
+    Args:
+        directory: Path to check
+        
+    Returns:
+        Tuple of (is_valid, error_message)
+    """
+    if not directory.exists():
+        msg = f"Directory does not exist: {directory}"
+        logger.error(msg)
+        return False, msg
+    if not directory.is_dir():
+        msg = f"Path is not a directory: {directory}"
+        logger.error(msg)
+        return False, msg
+    return True, None
 
 
 class DownloadManager:
