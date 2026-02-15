@@ -162,3 +162,22 @@ We should generally have no border radius
 The border should be: border: 1px solid #242424.
 
 For Green we use this colour: #548478
+
+For buttons we may do this:    QPushButton {
+                background-color: transparent;
+                color: #242424;
+                font-weight: bold;
+                font-size: 14px;
+                border: 1px solid #242424;
+            }
+            QPushButton:hover {
+                background-color: #9785c9;
+                color: #fff
+            }
+            QPushButton:pressed {
+                background-color: #573d9e;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
+            }

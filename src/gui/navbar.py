@@ -51,7 +51,6 @@ class NavBar(QWidget):
             background-color: transparent;
             color: #548478;
             border: none;
-            border-bottom: 2px solid #548478;
             padding: 10px 20px;
             font-size: 13px;
             font-weight: 600;
