@@ -22,7 +22,6 @@ from core import (
     TEMP_BASE,
     get_timestamp,
     create_timestamp_dir,
-    get_files_in_directory,
     move_files_to_destination,
     cleanup_timestamp_dir,
     validate_directory_exists,
