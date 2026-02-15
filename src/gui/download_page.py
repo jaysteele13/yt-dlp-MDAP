@@ -560,7 +560,7 @@ class DownloadPage(QWidget):
         
         self.append_output(f"<span style='color: #569CD6;'>Moving to: {artist} - {album}</span>")
         
-        success, dest, error = self.workflow.confirm_and_move(
+        success, dest, error, file_count = self.workflow.confirm_and_move(
             artist=artist,
             album=album,
             is_album_type=self.is_album_type
@@ -569,6 +569,7 @@ class DownloadPage(QWidget):
         if success:
             self.append_output(f"<span style='color: #4CAF50;'>✓ Files moved successfully!</span>")
             self.append_output(f"<span style='color: #888;'>Location: {dest}</span>")
+            self.append_output(f"<span style='color: #888;'>Files: {file_count}</span>")
             
             from notion import check_notion_api_configured, create_database_entry
             
@@ -579,7 +580,6 @@ class DownloadPage(QWidget):
             
             if is_configured:
                 url = self.link_entry.text().strip()
-                file_count = len(self.workflow.get_downloaded_files()) if self.workflow else 0
                 
                 self.append_output("")
                 self.append_output(f"<span style='color: #569CD6;'>Saving to Notion...</span>")
