@@ -16,6 +16,7 @@ import logging
 from pathlib import Path
 
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QIcon
 
 from gui.base_window import BaseWindow
 from gui.download_page import DownloadPage
@@ -41,6 +42,9 @@ def main():
     
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
+    
+    icon_path = Path(__file__).parent.parent / 'assets' / 'icon' / 'mdap-yt-dlp-gui.png'
+    app.setWindowIcon(QIcon(str(icon_path)))
     
     logger.debug("Creating main window")
     window = BaseWindow(
