@@ -262,7 +262,7 @@ class DownloadPage(QWidget):
         title_label.setStyleSheet("color: #333;")
         layout.addWidget(title_label)
         
-        input_group = QGroupBox("Download")
+        input_group = QGroupBox()
         input_layout = QVBoxLayout()
         
         link_layout = QHBoxLayout()

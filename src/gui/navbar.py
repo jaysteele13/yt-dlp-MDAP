@@ -8,11 +8,12 @@ Features:
 """
 
 import logging
+from pathlib import Path
 from typing import List, Optional
 
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QFrame
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontDatabase
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,10 @@ class NavBar(QWidget):
         self._active_page_id = None
         self._pages = pages or []
         
+        self.font_family_medium = None
+        self.font_family_black = None
+        self._load_custom_font()
+        
         self._setup_ui()
         
         logger.info(f"NavBar initialized with {len(self._pages)} pages")
@@ -108,7 +113,10 @@ class NavBar(QWidget):
             btn = QPushButton(page_label)
             btn.setCursor(Qt.PointingHandCursor)
             btn.setStyleSheet(self.NAV_BUTTON_STYLE)
-            btn.setFont(QFont("", 10, QFont.Medium))
+            if self.font_family_medium:
+                btn.setFont(QFont(self.font_family_medium, 10, QFont.Medium))
+            else:
+                btn.setFont(QFont("", 10, QFont.Medium))
             btn.clicked.connect(lambda checked, pid=page_id: self._on_button_clicked(pid))
             
             self._buttons[page_id] = btn
@@ -146,10 +154,18 @@ class NavBar(QWidget):
         for pid, btn in self._buttons.items():
             if pid == page_id:
                 btn.setStyleSheet(self.ACTIVE_BUTTON_STYLE)
-                btn.setFont(QFont("", 10, QFont.DemiBold))
+                if self.font_family_black:
+                    btn.setFont(QFont(self.font_family_black, 10, QFont.DemiBold))
+                elif self.font_family_medium:
+                    btn.setFont(QFont(self.font_family_medium, 10, QFont.DemiBold))
+                else:
+                    btn.setFont(QFont("", 10, QFont.DemiBold))
             else:
                 btn.setStyleSheet(self.NAV_BUTTON_STYLE)
-                btn.setFont(QFont("", 10, QFont.Medium))
+                if self.font_family_medium:
+                    btn.setFont(QFont(self.font_family_medium, 10, QFont.Medium))
+                else:
+                    btn.setFont(QFont("", 10, QFont.Medium))
         
         self._active_page_id = page_id
         logger.info(f"NavBar: Active page set to: {page_id}")
@@ -171,7 +187,10 @@ class NavBar(QWidget):
         btn = QPushButton(label)
         btn.setCursor(Qt.PointingHandCursor)
         btn.setStyleSheet(self.NAV_BUTTON_STYLE)
-        btn.setFont(QFont("", 10, QFont.Medium))
+        if self.font_family_medium:
+            btn.setFont(QFont(self.font_family_medium, 10, QFont.Medium))
+        else:
+            btn.setFont(QFont("", 10, QFont.Medium))
         btn.clicked.connect(lambda checked, pid=page_id: self._on_button_clicked(pid))
         
         self._buttons[page_id] = btn
@@ -190,6 +209,30 @@ class NavBar(QWidget):
         self._pages.append({'id': page_id, 'label': label})
         
         logger.info(f"NavBar: Added page {page_id}")
+    
+    def _load_custom_font(self):
+        """Load custom fonts from application resources"""
+        base_path = Path(__file__).parent.parent.parent / "assets" / "font" / "Geist_Mono"
+        
+        font_id_medium = QFontDatabase.addApplicationFont(
+            str(base_path / "static" / "GeistMono-Medium.ttf")
+        )
+        font_id_black = QFontDatabase.addApplicationFont(
+            str(base_path / "static" / "GeistMono-Bold.ttf")
+        )
+        
+        self.font_family_medium = None
+        self.font_family_black = None
+        
+        if font_id_medium != -1:
+            self.font_family_medium = QFontDatabase.applicationFontFamilies(font_id_medium)[0]
+            logger.debug(f"Loaded custom font: {self.font_family_medium}")
+        else:
+            logger.warning(f"Failed to load medium font from: {base_path}")
+        
+        if font_id_black != -1:
+            self.font_family_black = QFontDatabase.applicationFontFamilies(font_id_black)[0]
+            logger.debug(f"Loaded black font: {self.font_family_black}")
     
     def get_active_page(self) -> Optional[str]:
         """Get the currently active page identifier."""

@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout, QTextEdit, QScrollArea, QProgressBar
 )
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontDatabase
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +138,11 @@ class NotionPage(QWidget):
         super().__init__(parent)
         logger.info("Initializing NotionPage")
         self._config = {}
+        
+        self.font_family_medium = None
+        self.font_family_black = None
+        self._load_custom_font()
+        
         self._load_config()
         self._init_ui()
         logger.info("NotionPage initialized")
@@ -175,6 +180,30 @@ class NotionPage(QWidget):
         except Exception as e:
             logger.error(f"Failed to save config: {e}")
             return False
+
+    def _load_custom_font(self):
+        """Load custom fonts from application resources"""
+        base_path = Path(__file__).parent.parent.parent / "assets" / "font" / "Geist_Mono"
+        
+        font_id_medium = QFontDatabase.addApplicationFont(
+            str(base_path / "static" / "GeistMono-Medium.ttf")
+        )
+        font_id_black = QFontDatabase.addApplicationFont(
+            str(base_path / "static" / "GeistMono-Bold.ttf")
+        )
+        
+        self.font_family_medium = None
+        self.font_family_black = None
+        
+        if font_id_medium != -1:
+            self.font_family_medium = QFontDatabase.applicationFontFamilies(font_id_medium)[0]
+            logger.debug(f"Loaded custom font: {self.font_family_medium}")
+        else:
+            logger.warning(f"Failed to load medium font from: {base_path}")
+        
+        if font_id_black != -1:
+            self.font_family_black = QFontDatabase.applicationFontFamilies(font_id_black)[0]
+            logger.debug(f"Loaded black font: {self.font_family_black}")
     
     def _init_ui(self):
         """Initialize the UI"""
@@ -187,7 +216,12 @@ class NotionPage(QWidget):
         title_layout = QHBoxLayout()
         
         page_title = QLabel("Notion Configuration")
-        page_title.setFont(QFont("", 14, QFont.Bold))
+        if self.font_family_black:
+            page_title.setFont(QFont(self.font_family_black, 14, QFont.ExtraBold))
+        elif self.font_family_medium:
+            page_title.setFont(QFont(self.font_family_medium, 14))
+        else:
+            page_title.setFont(QFont("", 14, QFont.Bold))
         page_title.setStyleSheet("color: #333;")
         title_layout.addWidget(page_title)
         
