@@ -10,7 +10,7 @@ from pathlib import Path
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit,
     QPushButton, QGroupBox, QMessageBox, QDialog,
-    QHBoxLayout, QTextEdit, QScrollArea
+    QHBoxLayout, QTextEdit, QScrollArea, QProgressBar
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
@@ -369,6 +369,23 @@ class NotionPage(QWidget):
         
         layout.addLayout(button_layout)
         
+        self.notion_progress_bar = QProgressBar()
+        self.notion_progress_bar.setTextVisible(False)
+        self.notion_progress_bar.setMaximumHeight(6)
+        self.notion_progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: none;
+                background-color: #e0e0e0;
+                border: 1px solid #242424
+            }
+            QProgressBar::chunk {
+                background-color: #9785c9;
+                border: 1px solid #242424
+            }
+        """)
+        self.notion_progress_bar.setVisible(False)
+        layout.addWidget(self.notion_progress_bar)
+        
         self.setLayout(layout)
         logger.debug("NotionPage UI setup complete")
     
@@ -392,9 +409,20 @@ class NotionPage(QWidget):
             )
             return
         
+        self.notion_progress_bar.setVisible(True)
+        self.notion_progress_bar.setMaximum(0)
+        self.test_btn.setEnabled(False)
+        self.save_btn.setEnabled(False)
+        
         from notion import test_notion_connection
         
         success, error, databases = test_notion_connection(internal_secret)
+        
+        self.notion_progress_bar.setVisible(False)
+        self.notion_progress_bar.setMaximum(100)
+        self.notion_progress_bar.setValue(100)
+        self.test_btn.setEnabled(True)
+        self.save_btn.setEnabled(True)
         
         if success:
             db_info = ""
@@ -477,6 +505,11 @@ class NotionPage(QWidget):
             )
             return
         
+        self.notion_progress_bar.setVisible(True)
+        self.notion_progress_bar.setMaximum(0)
+        self.test_btn.setEnabled(False)
+        self.save_btn.setEnabled(False)
+        
         self._config["internal_secret"] = internal_secret
         self._config["NOTION_API_KEY"] = internal_secret
         self._config["database_id"] = database_id
@@ -486,12 +519,24 @@ class NotionPage(QWidget):
             refresh_config()
             self._load_recent_activity()
             
+            self.notion_progress_bar.setVisible(False)
+            self.notion_progress_bar.setMaximum(100)
+            self.notion_progress_bar.setValue(100)
+            self.test_btn.setEnabled(True)
+            self.save_btn.setEnabled(True)
+            
             QMessageBox.information(
                 self,
                 "Configuration Saved",
                 "Notion configuration saved successfully!"
             )
         else:
+            self.notion_progress_bar.setVisible(False)
+            self.notion_progress_bar.setMaximum(100)
+            self.notion_progress_bar.setValue(100)
+            self.test_btn.setEnabled(True)
+            self.save_btn.setEnabled(True)
+            
             QMessageBox.critical(
                 self,
                 "Error",

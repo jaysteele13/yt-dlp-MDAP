@@ -372,6 +372,23 @@ class DownloadPage(QWidget):
         """)
         layout.addWidget(self.progress_bar)
         
+        self.notion_progress_bar = QProgressBar()
+        self.notion_progress_bar.setTextVisible(False)
+        self.notion_progress_bar.setMaximumHeight(6)
+        self.notion_progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: none;
+                background-color: #e0e0e0;
+                border: 1px solid #242424
+            }
+            QProgressBar::chunk {
+                background-color: #548478;
+                border: 1px solid #242424
+            }
+        """)
+        self.notion_progress_bar.setVisible(False)
+        layout.addWidget(self.notion_progress_bar)
+        
         line = QFrame()
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
@@ -567,12 +584,19 @@ class DownloadPage(QWidget):
                 self.append_output("")
                 self.append_output(f"<span style='color: #569CD6;'>Saving to Notion...</span>")
                 
+                self.notion_progress_bar.setVisible(True)
+                self.notion_progress_bar.setMaximum(0)
+                
                 notion_success, _, notion_error = create_database_entry(
                     artist_name=artist,
                     album_name=album,
                     url=url,
                     song_count=file_count
                 )
+                
+                self.notion_progress_bar.setVisible(False)
+                self.notion_progress_bar.setMaximum(100)
+                self.notion_progress_bar.setValue(100)
                 
                 if notion_success:
                     self.append_output(f"<span style='color: #4CAF50;'>✓ Notion entry created!</span>")
