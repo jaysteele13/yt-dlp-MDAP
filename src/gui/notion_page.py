@@ -482,6 +482,8 @@ class NotionPage(QWidget):
         self._config["database_id"] = database_id
         
         if self._save_config_to_file():
+            from notion import refresh_config
+            refresh_config()
             self._load_recent_activity()
             
             QMessageBox.information(

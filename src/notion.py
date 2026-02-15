@@ -72,19 +72,26 @@ def get_notion_api_key() -> Optional[str]:
     """
     global NOTION_API_KEY
     
-    if NOTION_API_KEY:
-        return NOTION_API_KEY
-    
     config = load_notion_config()
     
     NOTION_API_KEY = config.get("internal_secret") or config.get("NOTION_API_KEY")
     
     if NOTION_API_KEY:
-        logger.debug("NOTION_API_KEY loaded from config")
+        logger.info(f"NOTION_API_KEY loaded from config: {NOTION_API_KEY[:20]}...")
     else:
         logger.debug("NOTION_API_KEY not found in config")
     
     return NOTION_API_KEY
+
+
+def refresh_config():
+    """Force reload of configuration from file."""
+    global NOTION_API_KEY, NOTION_DATABASE_ID
+    NOTION_API_KEY = None
+    NOTION_DATABASE_ID = None
+    get_notion_api_key()
+    get_database_id()
+    logger.debug("Configuration refreshed from file")
 
 
 def get_database_id() -> Optional[str]:
@@ -95,9 +102,6 @@ def get_database_id() -> Optional[str]:
         Database ID string or None if not configured
     """
     global NOTION_DATABASE_ID
-    
-    if NOTION_DATABASE_ID:
-        return NOTION_DATABASE_ID
     
     config = load_notion_config()
     NOTION_DATABASE_ID = config.get("database_id")
@@ -261,6 +265,8 @@ def create_database_entry(
     if not database_id:
         return False, None, "Database ID not configured"
     
+    logger.info(f"Creating Notion entry - API key present: {bool(api_key)}, key: {api_key[:20] if api_key else 'None'}..., Database ID: {database_id}")
+    
     create_url = "https://api.notion.com/v1/pages"
     
     properties = {}
@@ -323,11 +329,13 @@ def create_database_entry(
             return True, response.json(), None
         else:
             error_msg = f"Status code: {response.status_code}"
+            error_data = None
             try:
                 error_data = response.json()
                 error_msg = error_data.get("message", error_msg)
             except:
                 pass
+            logger.error(f"Notion API error: status={response.status_code}, response={error_data}")
             return False, None, error_msg
             
     except requests.exceptions.Timeout:
