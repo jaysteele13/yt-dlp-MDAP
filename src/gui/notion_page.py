@@ -492,17 +492,50 @@ class NotionPage(QWidget):
                             "date": date
                         })
                     
+                    # Get the widget width to calculate available space
+                    widget_width = self.recent_activity_list.width()
+                    
+                    # Get font metrics to calculate character width
+                    font_metrics = self.recent_activity_list.fontMetrics()
+                    char_width = font_metrics.averageCharWidth()
+                    
+                    # Calculate available characters (accounting for margins and separators)
+                    # Subtract for: borders (2), column separators (8 chars for " | "), scrollbar (~20px)
+                    available_chars = max((widget_width - 20) // char_width - 10, 60)
+                    
+                    # Fixed widths for songs and date columns
+                    songs_width = 6
+                    date_width = 16
+                    separator_chars = 10  # " | " between columns
+                    
+                    # Remaining space for album and artist
+                    remaining = available_chars - songs_width - date_width - separator_chars
+                    
+                    # Split remaining space between album and artist (you can adjust the ratio)
+                    album_width = int(remaining * 0.5)  # 50% for album
+                    artist_width = remaining - album_width  # 50% for artist
+                    
+                    # Set minimum widths
+                    album_width = max(album_width, 20)
+                    artist_width = max(artist_width, 20)
+                    
                     col_widths = {
-                        "album": max(len("Album"), 40),
-                        "artist": max(len("Artist"), 40),
-                        "songs": max(len("Songs"), 6),
-                        "date": max(len("Date"), 16)
+                        "album": album_width,
+                        "artist": artist_width,
+                        "songs": songs_width,
+                        "date": date_width
                     }
+                    
+                    def truncate_text(text, width):
+                        """Truncate text to fit width, adding ellipsis if needed"""
+                        if len(text) <= width:
+                            return text
+                        return text[:width-3] + "..."
                     
                     def make_row(data):
                         return (
-                            f"| {data['album']:<{col_widths['album']}} "
-                            f"| {data['artist']:<{col_widths['artist']}} "
+                            f"| {truncate_text(data['album'], col_widths['album']):<{col_widths['album']}} "
+                            f"| {truncate_text(data['artist'], col_widths['artist']):<{col_widths['artist']}} "
                             f"| {data['songs']:<{col_widths['songs']}} "
                             f"| {data['date']:<{col_widths['date']}} |"
                         )
@@ -531,7 +564,6 @@ class NotionPage(QWidget):
                 self.recent_activity_list.setPlainText(display_text)
         else:
             self.recent_activity_list.setPlainText(f"Failed to load recent activity:\n{error}")
-    
     def _save_config(self):
         """Save Notion configuration"""
         logger.info("Saving Notion configuration")
