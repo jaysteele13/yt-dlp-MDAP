@@ -96,10 +96,10 @@ class NavBar(QWidget):
         self.setFixedHeight(50)
         
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(15, 0, 15, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         
-        layout.addSpacing(20)
+        layout.addSpacing(0)
         
         for page in self._pages:
             page_id = page.get('id')
