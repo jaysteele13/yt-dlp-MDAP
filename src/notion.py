@@ -196,38 +196,6 @@ def test_notion_connection(api_key: Optional[str] = None) -> Tuple[bool, Optiona
         return False, f"Unexpected error: {str(e)}", None
 
 
-def get_database_info(api_key: str, database_id: str) -> Tuple[bool, Optional[Dict], Optional[str]]:
-    """
-    Get information about a specific database.
-    
-    Args:
-        api_key: Notion API key
-        database_id: Database ID to query
-        
-    Returns:
-        Tuple of (success, database_info, error_message)
-    """
-    import requests
-    
-    db_url = f"https://api.notion.com/v1/databases/{database_id}"
-    headers = {
-        "Notion-Version": "2022-06-28",
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    try:
-        response = requests.get(db_url, headers=headers, timeout=10)
-        
-        if response.status_code == 200:
-            return True, response.json(), None
-        else:
-            return False, None, f"Status code: {response.status_code}"
-            
-    except Exception as e:
-        return False, None, str(e)
-
-
 def create_database_entry(
     artist_name: str,
     album_name: str,

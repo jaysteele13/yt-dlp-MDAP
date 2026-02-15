@@ -26,22 +26,12 @@ logger = logging.getLogger(__name__)
 
 
 def get_timestamp() -> str:
-    """
-    Get current timestamp as string for directory naming.
-    
-    Returns:
-        Timestamp string in format YYYYMMDD_HHMMSS
-    """
+    """Get current timestamp as string for directory naming."""
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
 def create_timestamp_dir() -> Tuple[bool, Path, Optional[str]]:
-    """
-    Create a timestamped temporary directory under Music/temp.
-    
-    Returns:
-        Tuple of (success, directory_path, error_message)
-    """
+    """Create a timestamped temporary directory under Music/temp."""
     try:
         TEMP_BASE.mkdir(parents=True, exist_ok=True)
         ts = get_timestamp()
@@ -54,44 +44,13 @@ def create_timestamp_dir() -> Tuple[bool, Path, Optional[str]]:
         return False, None, str(e)
 
 
-def get_files_in_directory(directory: Path) -> List[Path]:
-    """
-    Get all audio files in a directory.
-    
-    Args:
-        directory: Path to directory
-        
-    Returns:
-        List of audio file paths
-    """
-    audio_extensions = {'.mp3', '.m4a', '.flac', '.ogg', '.opus', '.wav', '.aac'}
-    try:
-        files = [f for f in directory.iterdir() if f.suffix.lower() in audio_extensions]
-        logger.debug(f"Found {len(files)} audio files in {directory}")
-        return files
-    except Exception as e:
-        logger.error(f"Failed to list files in {directory}: {e}")
-        return []
-
-
 def move_files_to_destination(
     src: Path,
     artist: str,
     album: str,
     base_dir: Path
 ) -> Tuple[bool, Path, Optional[str], int]:
-    """
-    Move files from source to destination directory (Artist/Album structure).
-    
-    Args:
-        src: Source directory (temp timestamp dir)
-        artist: Artist name
-        album: Album name
-        base_dir: Base output directory
-        
-    Returns:
-        Tuple of (success, destination_path, error_message, file_count)
-    """
+    """Move files from source to destination directory (Artist/Album structure)."""
     try:
         artist_safe = DownloadManager.sanitize_filename(artist)
         album_safe = DownloadManager.sanitize_filename(album)
@@ -99,15 +58,10 @@ def move_files_to_destination(
         dest = base_dir / artist_safe / album_safe
         dest.mkdir(parents=True, exist_ok=True)
         
-        files = get_files_in_directory(src)
-        if not files:
-            logger.warning(f"No audio files found in {src}")
-            return False, None, "No audio files found in source directory", 0
-        
         files_in_src = [f for f in src.iterdir() if f.is_file()]
         if not files_in_src:
             logger.warning(f"No files found in {src}")
-            return False, None, "No files found in source directory", 0
+            return False, Path(), "No files found in source directory", 0
         
         moved_count = 0
         for file in files_in_src:
@@ -121,7 +75,7 @@ def move_files_to_destination(
         
     except Exception as e:
         logger.error(f"Failed to move files to destination: {e}")
-        return False, None, str(e), 0
+        return False, Path(), str(e), 0
 
 
 def cleanup_timestamp_dir(ts_dir: Path) -> Tuple[bool, Optional[str]]:
@@ -172,12 +126,6 @@ class DownloadManager:
     """Manages the core download workflow logic"""
     
     def __init__(self, config_file: Optional[Path] = None):
-        """
-        Initialize the download manager
-        
-        Args:
-            config_file: Path to config file (defaults to ~/.yt_download_helper_config.json)
-        """
         self.config_file = config_file or Path.home() / "Music/.config/.yt_download_helper_config.json"
         self.config = self.load_config()
     
@@ -196,37 +144,14 @@ class DownloadManager:
             return default_config
     
     def save_config(self, config: Optional[Dict] = None) -> None:
-        """
-        Save configuration to file
-        
-        Args:
-            config: Configuration dict to save (uses self.config if None)
-        """
+        """Save configuration to file"""
         config_to_save = config or self.config
         with open(self.config_file, 'w') as f:
             json.dump(config_to_save, f, indent=2)
     
-    def update_config(self, **kwargs) -> None:
-        """
-        Update specific config values
-        
-        Args:
-            **kwargs: Key-value pairs to update in config
-        """
-        self.config.update(kwargs)
-        self.save_config()
-    
     @staticmethod
     def sanitize_filename(name: str) -> str:
-        """
-        Sanitize a string for use as a filename/directory name
-        
-        Args:
-            name: String to sanitize
-            
-        Returns:
-            Sanitized string safe for filesystem
-        """
+        """Sanitize a string for use as a filename/directory name."""
         invalid_chars = '<>:"/\\|?*'
         sanitized = name
         for char in invalid_chars:
@@ -235,182 +160,13 @@ class DownloadManager:
     
     @staticmethod
     def validate_youtube_url(url: str) -> bool:
-        """
-        Basic validation for YouTube URLs
-        
-        Args:
-            url: URL to validate
-            
-        Returns:
-            True if URL looks like a YouTube link
-        """
+        """Basic validation for YouTube URLs."""
         url_lower = url.lower()
         return any([
             'youtube.com' in url_lower,
             'youtu.be' in url_lower,
             'music.youtube.com' in url_lower
         ])
-    
-    def validate_input(self, link: str, artist: str, album: str, base_dir: str) -> Tuple[bool, Optional[str]]:
-        """
-        Validate all input fields
-        
-        Args:
-            link: YouTube URL
-            artist: Artist name
-            album: Album name
-            base_dir: Base directory path
-            
-        Returns:
-            Tuple of (is_valid, error_message)
-        """
-        if not link or not link.strip():
-            return False, "YouTube link is required"
-        
-        if not self.validate_youtube_url(link):
-            return False, "Invalid YouTube URL"
-        
-        if not artist or not artist.strip():
-            return False, "Artist name is required"
-        
-        if not album or not album.strip():
-            return False, "Album name is required"
-        
-        if not base_dir or not base_dir.strip():
-            return False, "Base directory is required"
-        
-        return True, None
-    
-    def create_directory_name(self, artist: str, album: str) -> str:
-        """
-        Create a sanitized directory name from artist and album
-        
-        Args:
-            artist: Artist name
-            album: Album name
-            
-        Returns:
-            Sanitized directory name in format "Artist - Album"
-        """
-        artist_safe = self.sanitize_filename(artist)
-        album_safe = self.sanitize_filename(album)
-        return f"{artist_safe}/{album_safe}"
-    
-    def create_download_directory(self, artist: str, album: str, base_dir: str) -> Tuple[bool, Path, Optional[str]]:
-        """
-        Create the download directory
-        
-        Args:
-            artist: Artist name
-            album: Album name
-            base_dir: Base directory path
-            
-        Returns:
-            Tuple of (success, directory_path, error_message)
-        """
-        try:
-            dir_name = self.create_directory_name(artist, album)
-            full_path = Path(base_dir) / dir_name
-            full_path.mkdir(parents=True, exist_ok=True)
-            return True, full_path, None
-        except Exception as e:
-            return False, None, str(e)
-    
-    def generate_ytdlp_command(self, directory: Path, link: str) -> str:
-        """
-        Generate the yt-dlp command
-        
-        Args:
-            directory: Target directory
-            link: YouTube URL
-            
-        Returns:
-            Complete yt-dlp command string
-        """
-        return f'cd "{directory}" && yt-dlp --extract-audio --audio-quality 0  "{link}"'
-    
-    def create_download_entry(self, link: str, artist: str, album: str, 
-                            directory: Path) -> Dict:
-        """
-        Create a download entry data structure
-        
-        Args:
-            link: YouTube URL
-            artist: Artist name
-            album: Album name
-            directory: Created directory path
-            
-        Returns:
-            Dictionary with download entry information
-        """
-        return {
-            'timestamp': datetime.now().isoformat(),
-            'link': link,
-            'artist': artist,
-            'album': album,
-            'directory': str(directory),
-            'directory_name': directory.name,
-            'ytdlp_command': self.generate_ytdlp_command(directory, link)
-        }
-    
-    def process_download(self, link: str, artist: str, album: str, 
-                        base_dir: Optional[str] = None) -> Tuple[bool, Optional[Dict], Optional[str]]:
-        """
-        Main workflow: validate input, create directory, and prepare download entry
-        
-        Args:
-            link: YouTube URL
-            artist: Artist name
-            album: Album name
-            base_dir: Base directory (uses config default if None)
-            
-        Returns:
-            Tuple of (success, download_entry_dict, error_message)
-        """
-        # Use config base directory if not provided
-        if base_dir is None:
-            base_dir = self.config['base_directory']
-        
-        # Validate input
-        valid, error = self.validate_input(link, artist, album, base_dir)
-        if not valid:
-            return False, None, error
-        
-        # Create directory
-        success, directory, error = self.create_download_directory(artist, album, base_dir)
-        if not success:
-            return False, None, f"Failed to create directory: {error}"
-        
-        # Create download entry
-        entry = self.create_download_entry(link, artist, album, directory)
-        
-        # Update config with last used values
-        self.update_config(
-            last_artist=artist,
-            last_album=album,
-            base_directory=base_dir
-        )
-        
-        return True, entry, None
-
-
-# Convenience function for simple usage
-def quick_process(link: str, artist: str, album: str, 
-                 base_dir: Optional[str] = None) -> Tuple[bool, Optional[Dict], Optional[str]]:
-    """
-    Quick one-line function to process a download
-    
-    Args:
-        link: YouTube URL
-        artist: Artist name
-        album: Album name
-        base_dir: Base directory (optional)
-        
-    Returns:
-        Tuple of (success, download_entry_dict, error_message)
-    """
-    manager = DownloadManager()
-    return manager.process_download(link, artist, album, base_dir)
 
 
 
