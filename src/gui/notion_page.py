@@ -37,40 +37,50 @@ class NotionInfoDialog(QDialog):
         
         instructions = """
 <h2>Notion Integration Setup</h2>
-
 <p>Follow these steps to configure Notion integration:</p>
 
-<h3>Step 1: Create a Notion Integration</h3>
-<ol>
-<li>Go to <a href="https://www.notion.so/my-integrations">https://www.notion.so/my-integrations</a></li>
-<li>Click <b>"New integration"</b></li>
-<li>Give it a name (e.g., "MDAP")</li>
-<li>Select the workspace where you want to use it</li>
-<li>Copy the <b>Internal Integration Secret</b></li>
-</ol>
-
-<h3>Step 2: Share a Database with the Integration</h3>
-<ol>
-<li>Create or open a Notion database you want to use</li>
-<li>Click the <b>•••</b> menu in the top-right</li>
-<li>Select <b>"Connect to"</b> and choose your integration</li>
-<li>Copy the <b>Database ID</b> from the URL<br>
-    (e.g., notion.so/[workspace]/<b>DATABASE_ID</b>?v=...)</li>
-</ol>
-
-<h3>Step 3: Enter Credentials</h3>
-<p>Enter the Internal Integration Secret and Database ID in the form.</p>
-
-<h3>Database Schema</h3>
-<p>Your database should have these properties:</p>
+<h3>Step 1: Set Up Your Notion Database</h3>
+<p>We must set up a notion database to begin with. When we do this ensure we have Field Names:</p>
 <ul>
-<li><b>Title</b> (Title) - Song/album title</li>
-<li><b>Artist</b> (Text) - Artist name</li>
-<li><b>Album</b> (Text) - Album name (optional)</li>
-<li><b>Date</b> (Date) - Download date</li>
-<li><b>URL</b> (URL) - YouTube link</li>
+<li><b>Album Name</b></li>
+<li><b>Artist Name</b></li>
+<li><b>URL</b></li>
+<li><b>Song Count</b></li>
+<li><b>Date</b></li>
 </ul>
-        """
+<p>Without these fields this API will not work. I cba to configure this to be dynamic soz.</p>
+<p>In the source code I'm sure you can cook something up with a free agent like Big Pickle open code 🥒🥒</p>
+
+<h3>Step 2: Create Your Integration</h3>
+<p>We now must Navigate to <b>Develop or manage integrations</b>. Go to settings > Connections > Develop or manage integrations.</p>
+<p>As of 2026-02 this is link: <a href="https://www.notion.so/profile/integrations">https://www.notion.so/profile/integrations</a></p>
+<ol>
+<li>Add a new integration. Call it whatever, see if I care. 🔥</li>
+<li>Once created, copy the <b>Internal integration secret</b> - this will act as your API key</li>
+<li>This application is fully local. Your secret will be saved to <code>~/.mdap/notion_config.json</code></li>
+<li>This isn't encrypted but i'm sure nothing that bad can happen if someone got access to your lousy discography database (sorry not sorry 🤪)</li>
+<li>In the <b>Content access</b> make sure to include the page in where your database lives. Fanks x</li>
+</ol>
+
+<h3>Step 3: Configure the Application</h3>
+<ol>
+<li>Paste in that <b>Internal integration secret</b> i'm sure you copied earlier...</li>
+<li>Now save configuration. The log will say you have not configured your Database without the ID.</li>
+<li>Hit <b>"Test connection"</b> - this should return any available databases you have followed by a DatabaseId. e.g. coolDB: '[id]'</li>
+<li>Copy this, paste it in databaseId Input and save config.</li>
+<li>Now if you hit <b>"Refresh Recent Activity"</b> a silly little txt table should appear of your notion database.</li>
+</ol>
+
+<h3>Step 4</h3>
+<p>sike there is no step 4</p>
+<p>if you got a table return well done you toad. You have configured your notion database.</p>
+<p>When you download songs, they will automatically append to your database. If you get errors at that stage either:</p>
+<ol>
+<li>this has become outdated</li>
+<li>you didn't set up your fields properly at step 1</li>
+<li>something I didn't prepare for. There should be a log in the terminal - be vigilent. If it says your API is wrong. It probably is 🐭</li>
+</ol>
+"""
         
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
