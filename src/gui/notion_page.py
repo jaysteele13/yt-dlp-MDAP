@@ -279,6 +279,7 @@ class NotionPage(QWidget):
                 border: 1px solid #242424;
                 padding: 8px;
                 font-size: 12px;
+                font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
             }
         """)
         self.recent_activity_list.setPlaceholderText("No recent entries. Configure API and database to see recent activity.")
@@ -465,31 +466,104 @@ class NotionPage(QWidget):
             if not entries:
                 self.recent_activity_list.setPlainText("No recent entries found in the database.")
             else:
-                display_text = ""
-                for entry in entries:
-                    album = entry.get("album", "Unknown Album")
-                    artist = entry.get("artist", "Unknown Artist")
-                    song_count = entry.get("song_count", 0)
-                    date = entry.get("date", "")
+                def format_table(entries):
+                    if not entries:
+                        return ""
                     
-                    if date:
-                        try:
-                            from datetime import datetime
-                            dt = datetime.fromisoformat(date.replace("Z", "+00:00"))
-                            date = dt.strftime("%Y-%m-%d %H:%M")
-                        except:
-                            pass
+                    processed = []
+                    for entry in entries:
+                        album = entry.get("album", "Unknown Album")
+                        artist = entry.get("artist", "Unknown Artist")
+                        song_count = entry.get("song_count", 0)
+                        date = entry.get("date", "")
+                        
+                        if date:
+                            try:
+                                from datetime import datetime
+                                dt = datetime.fromisoformat(date.replace("Z", "+00:00"))
+                                date = dt.strftime("%Y-%m-%d %H:%M")
+                            except:
+                                pass
+                        
+                        processed.append({
+                            "album": album,
+                            "artist": artist,
+                            "songs": str(song_count) if song_count else "None",
+                            "date": date
+                        })
                     
-                    display_text += f"Album: {album}\n"
-                    display_text += f"Artist: {artist}\n"
-                    display_text += f"Songs: {song_count}\n"
-                    display_text += f"Date: {date}\n"
-                    display_text += "-" * 30 + "\n"
+                    # Get the widget width to calculate available space
+                    widget_width = self.recent_activity_list.width()
+                    
+                    # Get font metrics to calculate character width
+                    font_metrics = self.recent_activity_list.fontMetrics()
+                    char_width = font_metrics.averageCharWidth()
+                    
+                    # Calculate available characters (accounting for margins and separators)
+                    # Subtract for: borders (2), column separators (8 chars for " | "), scrollbar (~20px)
+                    available_chars = max((widget_width - 20) // char_width - 10, 60)
+                    
+                    # Fixed widths for songs and date columns
+                    songs_width = 6
+                    date_width = 16
+                    separator_chars = 10  # " | " between columns
+                    
+                    # Remaining space for album and artist
+                    remaining = available_chars - songs_width - date_width - separator_chars
+                    
+                    # Split remaining space between album and artist (you can adjust the ratio)
+                    album_width = int(remaining * 0.5)  # 50% for album
+                    artist_width = remaining - album_width  # 50% for artist
+                    
+                    # Set minimum widths
+                    album_width = max(album_width, 20)
+                    artist_width = max(artist_width, 20)
+                    
+                    col_widths = {
+                        "album": album_width,
+                        "artist": artist_width,
+                        "songs": songs_width,
+                        "date": date_width
+                    }
+                    
+                    def truncate_text(text, width):
+                        """Truncate text to fit width, adding ellipsis if needed"""
+                        if len(text) <= width:
+                            return text
+                        return text[:width-3] + "..."
+                    
+                    def make_row(data):
+                        return (
+                            f"| {truncate_text(data['album'], col_widths['album']):<{col_widths['album']}} "
+                            f"| {truncate_text(data['artist'], col_widths['artist']):<{col_widths['artist']}} "
+                            f"| {data['songs']:<{col_widths['songs']}} "
+                            f"| {data['date']:<{col_widths['date']}} |"
+                        )
+                    
+                    separator = (
+                        f"|{'-' * (col_widths['album'] + 2)}"
+                        f"|{'-' * (col_widths['artist'] + 2)}"
+                        f"|{'-' * (col_widths['songs'] + 2)}"
+                        f"|{'-' * (col_widths['date'] + 2)}|"
+                    )
+                    
+                    header = (
+                        f"| {'Album':<{col_widths['album']}} "
+                        f"| {'Artist':<{col_widths['artist']}} "
+                        f"| {'Songs':<{col_widths['songs']}} "
+                        f"| {'Date':<{col_widths['date']}} |"
+                    )
+                    
+                    lines = [header, separator]
+                    for row in processed:
+                        lines.append(make_row(row))
+                    
+                    return "\n".join(lines)
                 
+                display_text = format_table(entries)
                 self.recent_activity_list.setPlainText(display_text)
         else:
             self.recent_activity_list.setPlainText(f"Failed to load recent activity:\n{error}")
-    
     def _save_config(self):
         """Save Notion configuration"""
         logger.info("Saving Notion configuration")
