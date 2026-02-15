@@ -10,13 +10,50 @@ MDAP/
 │   ├── core.py          # Business logic (DownloadManager)
 │   ├── downloader.py   # yt-dlp operations (YTDLPDownloader)
 │   ├── logger.py        # Logging backends (abstract + implementations)
+│   ├── notion.py        # Notion API integration
 │   ├── notion_logger.py # Notion API integration (stub)
-│   └── gui_gt.py        # PyQt5 GUI application
+│   └── gui/
+│       ├── notion_page.py   # Notion configuration UI
+│       ├── download_page.py # Download page with Notion integration
+│       └── gui_gt.py        # PyQt5 GUI application
 ├── assets/
 │   └── metadata_example.json
 ├── planning/
 └── __pycache__/
 ```
+
+## Notion Integration
+
+### Configuration
+
+The Notion integration uses a configuration file stored at `~/.mdap/notion_config.json`:
+
+```json
+{
+  "NOTION_API_KEY": "secret_...",
+  "internal_secret": "secret_...",
+  "database_id": "your-database-id"
+}
+```
+
+### API Functions (src/notion.py)
+
+- `get_notion_api_key()` - Load API key from config
+- `get_database_id()` - Load database ID from config
+- `is_notion_configured()` - Check if API is configured
+- `check_notion_api_configured()` - Returns `(is_configured, error_message)`
+- `test_notion_connection(api_key)` - Test connection, returns `(success, error, databases)`
+- `create_database_entry(artist_name, album_name, url, song_count)` - Add entry to Notion
+- `get_recent_entries(limit)` - Get recent entries from database
+
+### Database Schema
+
+The Notion database should have these properties:
+- **Album Name** (Title) - Album title
+- **Artist Name** (Text) - Artist name
+- **Date** (Date) - Download date
+- **URL** (URL) - YouTube link
+- **Song Count** (Number) - Number of songs (optional)
 
 ## Commands
 

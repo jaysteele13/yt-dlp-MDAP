@@ -240,8 +240,79 @@ class NotionPage(QWidget):
         config_layout.addWidget(internal_secret_label)
         config_layout.addWidget(self.internal_secret_input)
         
+        config_layout.addSpacing(10)
+        
+        database_id_label = QLabel("Database ID:")
+        database_id_label.setStyleSheet("font-weight: bold; color: #333;")
+        self.database_id_input = QLineEdit()
+        self.database_id_input.setPlaceholderText("Enter your Notion database ID")
+        self.database_id_input.setMinimumHeight(35)
+        self.database_id_input.setStyleSheet("""
+            QLineEdit {
+                padding: 8px;
+                border: 1px solid #242424;
+                font-size: 13px;
+            }
+            QLineEdit:focus {
+                border: 2px solid #548478;
+            }
+        """)
+        
+        if self._config.get("database_id"):
+            self.database_id_input.setText(self._config.get("database_id"))
+        
+        config_layout.addWidget(database_id_label)
+        config_layout.addWidget(self.database_id_input)
+        
         config_group.setLayout(config_layout)
         layout.addWidget(config_group)
+        
+        recent_activity_group = QGroupBox("Recent Activity")
+        recent_activity_layout = QVBoxLayout()
+        
+        self.recent_activity_list = QTextEdit()
+        self.recent_activity_list.setReadOnly(True)
+        self.recent_activity_list.setMaximumHeight(150)
+        self.recent_activity_list.setStyleSheet("""
+            QTextEdit {
+                background-color: #f5f5f5;
+                border: 1px solid #242424;
+                padding: 8px;
+                font-size: 12px;
+            }
+        """)
+        self.recent_activity_list.setPlaceholderText("No recent entries. Configure API and database to see recent activity.")
+        recent_activity_layout.addWidget(self.recent_activity_list)
+        
+        refresh_btn_layout = QHBoxLayout()
+        self.refresh_activity_btn = QPushButton("Refresh Recent Activity")
+        self.refresh_activity_btn.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: #242424;
+                font-weight: bold;
+                font-size: 12px;
+                border: 1px solid #242424;
+            }
+            QPushButton:hover {
+                background-color: #9785c9;
+                color: #fff
+            }
+            QPushButton:pressed {
+                background-color: #573d9e;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
+            }
+        """)
+        self.refresh_activity_btn.clicked.connect(self._load_recent_activity)
+        refresh_btn_layout.addWidget(self.refresh_activity_btn)
+        refresh_btn_layout.addStretch()
+        recent_activity_layout.addLayout(refresh_btn_layout)
+        
+        recent_activity_group.setLayout(recent_activity_layout)
+        layout.addWidget(recent_activity_group)
         
         layout.addStretch()
         
@@ -321,17 +392,82 @@ class NotionPage(QWidget):
             )
             return
         
-        QMessageBox.information(
-            self,
-            "Notion Connection",
-            "Notion integration is not yet implemented.\n\nThis is a placeholder for future Notion API integration."
-        )
+        from notion import test_notion_connection
+        
+        success, error, databases = test_notion_connection(internal_secret)
+        
+        if success:
+            db_info = ""
+            if databases:
+                db_info = f"\nFound {len(databases)} database(s):\n"
+                for db in databases:
+                    db_info += f"  - {db['title']}: {db['id']}\n"
+            
+            QMessageBox.information(
+                self,
+                "Connection Successful",
+                f"✓ Notion connection successful!{db_info}"
+            )
+        else:
+            QMessageBox.critical(
+                self,
+                "Connection Failed",
+                f"✗ Failed to connect to Notion:\n{error}"
+            )
+    
+    def _load_recent_activity(self):
+        """Load recent activity from Notion database"""
+        logger.info("Loading recent Notion activity")
+        
+        from notion import get_recent_entries, is_notion_configured
+        
+        if not is_notion_configured():
+            self.recent_activity_list.setPlainText("Notion API is not configured.\nPlease enter your Internal Integration Secret and save.")
+            return
+        
+        from notion import get_database_id
+        db_id = get_database_id()
+        if not db_id:
+            self.recent_activity_list.setPlainText("Database ID is not configured.\nPlease enter your Database ID and save.")
+            return
+        
+        success, entries, error = get_recent_entries(limit=5)
+        
+        if success:
+            if not entries:
+                self.recent_activity_list.setPlainText("No recent entries found in the database.")
+            else:
+                display_text = ""
+                for entry in entries:
+                    album = entry.get("album", "Unknown Album")
+                    artist = entry.get("artist", "Unknown Artist")
+                    song_count = entry.get("song_count", 0)
+                    date = entry.get("date", "")
+                    
+                    if date:
+                        try:
+                            from datetime import datetime
+                            dt = datetime.fromisoformat(date.replace("Z", "+00:00"))
+                            date = dt.strftime("%Y-%m-%d %H:%M")
+                        except:
+                            pass
+                    
+                    display_text += f"Album: {album}\n"
+                    display_text += f"Artist: {artist}\n"
+                    display_text += f"Songs: {song_count}\n"
+                    display_text += f"Date: {date}\n"
+                    display_text += "-" * 30 + "\n"
+                
+                self.recent_activity_list.setPlainText(display_text)
+        else:
+            self.recent_activity_list.setPlainText(f"Failed to load recent activity:\n{error}")
     
     def _save_config(self):
         """Save Notion configuration"""
         logger.info("Saving Notion configuration")
         
         internal_secret = self.internal_secret_input.text().strip()
+        database_id = self.database_id_input.text().strip()
         
         if not internal_secret:
             QMessageBox.warning(
@@ -342,8 +478,12 @@ class NotionPage(QWidget):
             return
         
         self._config["internal_secret"] = internal_secret
+        self._config["NOTION_API_KEY"] = internal_secret
+        self._config["database_id"] = database_id
         
         if self._save_config_to_file():
+            self._load_recent_activity()
+            
             QMessageBox.information(
                 self,
                 "Configuration Saved",
@@ -359,3 +499,8 @@ class NotionPage(QWidget):
     def on_page_close(self):
         """Called when the page is closed"""
         logger.info("NotionPage: on_page_close called")
+    
+    def on_page_show(self):
+        """Called when the page is shown/activated"""
+        logger.info("NotionPage: on_page_show called")
+        self._load_recent_activity()

@@ -552,16 +552,51 @@ class DownloadPage(QWidget):
         if success:
             self.append_output(f"<span style='color: #4CAF50;'>✓ Files moved successfully!</span>")
             self.append_output(f"<span style='color: #888;'>Location: {dest}</span>")
+            
+            from notion import check_notion_api_configured, create_database_entry
+            
+            is_configured, config_error = check_notion_api_configured()
+            
+            notion_success = False
+            notion_error = None
+            
+            if is_configured:
+                url = self.link_entry.text().strip()
+                file_count = len(self.workflow.get_downloaded_files()) if self.workflow else 0
+                
+                self.append_output("")
+                self.append_output(f"<span style='color: #569CD6;'>Saving to Notion...</span>")
+                
+                notion_success, _, notion_error = create_database_entry(
+                    artist_name=artist,
+                    album_name=album,
+                    url=url,
+                    song_count=file_count
+                )
+                
+                if notion_success:
+                    self.append_output(f"<span style='color: #4CAF50;'>✓ Notion entry created!</span>")
+                else:
+                    self.append_output(f"<span style='color: #F44747;'>✗ Notion save failed: {notion_error}</span>")
+            
             self.append_output("")
             self.append_output(f"<span style='color: #4CAF50;'>{'='*50}</span>")
             self.append_output("")
             
-            reply = QMessageBox.question(
-                self,
-                "Download Complete",
-                f"Download complete!\n\nSaved to:\n{dest}\n\nOpen folder?",
-                QMessageBox.Yes | QMessageBox.No
-            )
+            if notion_success:
+                reply = QMessageBox.question(
+                    self,
+                    "Download and Notion Successful",
+                    f"Download and Notion entry saved!\n\nSaved to:\n{dest}\n\nOpen folder?",
+                    QMessageBox.Yes | QMessageBox.No
+                )
+            else:
+                reply = QMessageBox.question(
+                    self,
+                    "Download Complete",
+                    f"Download complete!\n\nSaved to:\n{dest}\n\nOpen folder?",
+                    QMessageBox.Yes | QMessageBox.No
+                )
             
             if reply == QMessageBox.Yes:
                 try:
