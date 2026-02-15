@@ -1,0 +1,17 @@
+# Ignore all __pycache__ directories everywhere
+**/__pycache__/
+__pycache__/
+
+# Ignore all .pyc and .pyo files
+*.py[cod]
+
+# Ignore compiled Python scripts
+*.so
+
+# Ignore .DS_Store (macOS)
+.DS_Store
+
+# Ignore virtual environments
+venv/
+env/
+.venv/

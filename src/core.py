@@ -79,7 +79,7 @@ def move_files_to_destination(
     artist: str,
     album: str,
     base_dir: Path
-) -> Tuple[bool, Path, Optional[str]]:
+) -> Tuple[bool, Path, Optional[str], int]:
     """
     Move files from source to destination directory (Artist/Album structure).
     
@@ -90,7 +90,7 @@ def move_files_to_destination(
         base_dir: Base output directory
         
     Returns:
-        Tuple of (success, destination_path, error_message)
+        Tuple of (success, destination_path, error_message, file_count)
     """
     try:
         artist_safe = DownloadManager.sanitize_filename(artist)
@@ -102,12 +102,12 @@ def move_files_to_destination(
         files = get_files_in_directory(src)
         if not files:
             logger.warning(f"No audio files found in {src}")
-            return False, None, "No audio files found in source directory"
+            return False, None, "No audio files found in source directory", 0
         
         files_in_src = [f for f in src.iterdir() if f.is_file()]
         if not files_in_src:
             logger.warning(f"No files found in {src}")
-            return False, None, "No files found in source directory"
+            return False, None, "No files found in source directory", 0
         
         moved_count = 0
         for file in files_in_src:
@@ -117,11 +117,11 @@ def move_files_to_destination(
             logger.debug(f"Moved: {file.name} -> {dest}")
         
         logger.info(f"Moved {moved_count} files to {dest}")
-        return True, dest, None
+        return True, dest, None, moved_count
         
     except Exception as e:
         logger.error(f"Failed to move files to destination: {e}")
-        return False, None, str(e)
+        return False, None, str(e), 0
 
 
 def cleanup_timestamp_dir(ts_dir: Path) -> Tuple[bool, Optional[str]]:

@@ -201,7 +201,7 @@ class DownloadWorkflow:
         artist: str,
         album: str,
         is_album_type: bool = True
-    ) -> Tuple[bool, Path, Optional[str]]:
+    ) -> Tuple[bool, Path, Optional[str], int]:
         """
         Move downloaded files to final destination after user confirmation.
         
@@ -217,9 +217,9 @@ class DownloadWorkflow:
         
         if not self._current_temp_dir or not self._current_temp_dir.exists():
             logger.error("No temp directory available for move operation")
-            return False, Path(), "No temp directory available. Run download() first."
+            return False, Path(), "No temp directory available. Run download() first.", 0
         
-        success, dest, error = move_files_to_destination(
+        success, dest, error, file_count = move_files_to_destination(
             src=self._current_temp_dir,
             artist=artist,
             album=album,
@@ -228,7 +228,7 @@ class DownloadWorkflow:
         
         if not success:
             logger.error(f"Failed to move files: {error}")
-            return False, Path(), error
+            return False, Path(), error, 0
         
         logger.info(f"Files moved to: {dest}")
         
@@ -243,7 +243,7 @@ class DownloadWorkflow:
             'artist': artist,
             'album': album,
             'final_directory': str(dest),
-            'file_count': len(self._downloaded_files)
+            'file_count': file_count
         }
         self._log_to_backend(entry)
         
@@ -251,7 +251,7 @@ class DownloadWorkflow:
         self._current_url = None
         self._downloaded_files = []
         
-        return True, dest, None
+        return True, dest, None, file_count
     
     def cancel(self) -> Tuple[bool, Optional[str]]:
         """
