@@ -279,6 +279,7 @@ class NotionPage(QWidget):
                 border: 1px solid #242424;
                 padding: 8px;
                 font-size: 12px;
+                font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
             }
         """)
         self.recent_activity_list.setPlaceholderText("No recent entries. Configure API and database to see recent activity.")
@@ -465,27 +466,68 @@ class NotionPage(QWidget):
             if not entries:
                 self.recent_activity_list.setPlainText("No recent entries found in the database.")
             else:
-                display_text = ""
-                for entry in entries:
-                    album = entry.get("album", "Unknown Album")
-                    artist = entry.get("artist", "Unknown Artist")
-                    song_count = entry.get("song_count", 0)
-                    date = entry.get("date", "")
+                def format_table(entries):
+                    if not entries:
+                        return ""
                     
-                    if date:
-                        try:
-                            from datetime import datetime
-                            dt = datetime.fromisoformat(date.replace("Z", "+00:00"))
-                            date = dt.strftime("%Y-%m-%d %H:%M")
-                        except:
-                            pass
+                    processed = []
+                    for entry in entries:
+                        album = entry.get("album", "Unknown Album")
+                        artist = entry.get("artist", "Unknown Artist")
+                        song_count = entry.get("song_count", 0)
+                        date = entry.get("date", "")
+                        
+                        if date:
+                            try:
+                                from datetime import datetime
+                                dt = datetime.fromisoformat(date.replace("Z", "+00:00"))
+                                date = dt.strftime("%Y-%m-%d %H:%M")
+                            except:
+                                pass
+                        
+                        processed.append({
+                            "album": album,
+                            "artist": artist,
+                            "songs": str(song_count) if song_count else "None",
+                            "date": date
+                        })
                     
-                    display_text += f"Album: {album}\n"
-                    display_text += f"Artist: {artist}\n"
-                    display_text += f"Songs: {song_count}\n"
-                    display_text += f"Date: {date}\n"
-                    display_text += "-" * 30 + "\n"
+                    col_widths = {
+                        "album": max(len("Album"), 40),
+                        "artist": max(len("Artist"), 40),
+                        "songs": max(len("Songs"), 6),
+                        "date": max(len("Date"), 16)
+                    }
+                    
+                    def make_row(data):
+                        return (
+                            f"| {data['album']:<{col_widths['album']}} "
+                            f"| {data['artist']:<{col_widths['artist']}} "
+                            f"| {data['songs']:<{col_widths['songs']}} "
+                            f"| {data['date']:<{col_widths['date']}} |"
+                        )
+                    
+                    separator = (
+                        f"|{'-' * (col_widths['album'] + 2)}"
+                        f"|{'-' * (col_widths['artist'] + 2)}"
+                        f"|{'-' * (col_widths['songs'] + 2)}"
+                        f"|{'-' * (col_widths['date'] + 2)}|"
+                    )
+                    
+                    header = (
+                        f"| {'Album':<{col_widths['album']}} "
+                        f"| {'Artist':<{col_widths['artist']}} "
+                        f"| {'Songs':<{col_widths['songs']}} "
+                        f"| {'Date':<{col_widths['date']}} |"
+                    )
+                    
+                    lines = [header, separator]
+                    for row in processed:
+                        lines.append(make_row(row))
+                    
+                    return "\n".join(lines)
                 
+                display_text = format_table(entries)
                 self.recent_activity_list.setPlainText(display_text)
         else:
             self.recent_activity_list.setPlainText(f"Failed to load recent activity:\n{error}")
