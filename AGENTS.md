@@ -11,11 +11,14 @@ MDAP/
 │   ├── downloader.py   # yt-dlp operations (YTDLPDownloader)
 │   ├── logger.py        # Logging backends (abstract + implementations)
 │   ├── notion.py        # Notion API integration
-│   ├── notion_logger.py # Notion API integration (stub)
+│   ├── workflow.py      # Download workflow orchestration
+│   ├── download_gui.py  # Main entry point for GUI
 │   └── gui/
-│       ├── notion_page.py   # Notion configuration UI
-│       ├── download_page.py # Download page with Notion integration
-│       └── gui_gt.py        # PyQt5 GUI application
+│       ├── __init__.py      # GUI package exports
+│       ├── base_window.py   # Base window with navigation
+│       ├── navbar.py        # Navigation bar widget
+│       ├── download_page.py # Download page UI
+│       └── notion_page.py   # Notion configuration UI
 ├── assets/
 │   └── metadata_example.json
 ├── planning/
@@ -61,10 +64,10 @@ The Notion database should have these properties:
 
 ```bash
 # Run GUI (requires PyQt5)
-python -m src.gui_gt
+python src/download_gui.py
 
-# Or directly
-python src/gui_gt.py
+# Or as module
+python -m src.download_gui
 ```
 
 ### Dependencies
