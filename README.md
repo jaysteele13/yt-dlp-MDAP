@@ -21,3 +21,34 @@ Instead of manually organising and creating files, this python app does it for u
 <img width="989" height="757" alt="upload and save songs" src="https://github.com/user-attachments/assets/f582175e-cf23-44c8-b56c-de8e6ec4d35e" />
 <img width="910" height="740" alt="image" src="https://github.com/user-attachments/assets/4f1262b5-8f54-41f0-a557-b67ecd547360" />
 <img width="1409" height="453" alt="notion updated" src="https://github.com/user-attachments/assets/132e4267-ac87-4cff-90e0-fd9a7a36f9af" />
+
+## How to install
+
+### Requirements
+
+- Python 3.8+
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+
+### Install dependencies
+
+```bash
+pip install PyQt5 yt-dlp
+```
+
+Or install yt-dlp via your system package manager:
+
+```bash
+sudo apt install yt-dlp
+```
+
+### Run the application
+
+```bash
+python src/download_gui.py
+```
+
+Or as a module:
+
+```bash
+python -m src.download_gui
+```
